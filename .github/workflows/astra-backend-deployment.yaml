@@ -95,30 +95,34 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: creds-artifact
+          name: |
+            - creds-artifact
+            - aprdetails
+            - astraprice
+            - liquiditymining
           path: 
             .
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: aprdetails
-          path: 
-            public/aprdetails.json
+    #   - name: Download artifacts
+    #     uses: actions/download-artifact@v4
+    #     with:
+    #       name: aprdetails
+    #       path: 
+    #         .
       
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: astraprice
-          path: 
-            public/astraprice.json
+    #   - name: Download artifacts
+    #     uses: actions/download-artifact@v4
+    #     with:
+    #       name: astraprice
+    #       path: 
+    #         .
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: liquiditymining
-          path: 
-            public/liquiditymining.json
+    #   - name: Download artifacts
+    #     uses: actions/download-artifact@v4
+    #     with:
+    #       name: liquiditymining
+    #       path: 
+            .
     
       - name: Get branch names.
         id: branch-names
