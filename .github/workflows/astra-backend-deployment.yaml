@@ -135,6 +135,9 @@ jobs:
           gcloud auth configure-docker us-central1-docker.pkg.dev
           ls -la
           cat .env
+          cat public/aprdetails.json
+          cat public/astraprice.json
+          cat public/liquiditymining.json
           docker build -t us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:testnet-${GITHUB_SHA::7} .
 
       - name: Push image to alpha repo if branch is development
