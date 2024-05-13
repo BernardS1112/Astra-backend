@@ -96,10 +96,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: |
-            - creds-artifact
-            - aprdetails
-            - astraprice
-            - liquiditymining
+            creds-artifact
+            aprdetails
+            astraprice
+            liquiditymining
           path: 
             .
 
