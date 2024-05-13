@@ -122,7 +122,7 @@ jobs:
     #     with:
     #       name: liquiditymining
     #       path: 
-            .
+            # .
     
       - name: Get branch names.
         id: branch-names
