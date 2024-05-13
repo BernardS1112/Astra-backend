@@ -103,19 +103,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: aprdetails
-          path: .
+          path: ./public
       
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: astraprice
-          path: .
+          path: ./public
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: liquiditymining
-          path: .
+          path: ./public
     
       - name: Get branch names.
         id: branch-names
