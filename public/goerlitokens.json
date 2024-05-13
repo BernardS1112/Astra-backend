@@ -1,0 +1,26 @@
+[
+  {
+    "img": "https://assets.coingecko.com/coins/images/17627/large/rI_YptK8.png?1653983088",
+    "name": "BitDAO",
+    "symbol": "BIT",
+    "contractAddress": "0x1eB30a63920f2F0F0aB588e17a529d0074a82Df3",
+    "isBaseToken": false,
+    "balanceLoaded": false
+  },
+  {
+    "img": "https://assets.coingecko.com/coins/images/14575/large/tribe.PNG?1617487954",
+    "name": "Tribe",
+    "symbol": "TRIBE",
+    "contractAddress": "0xCE5b6d574E3ac1eEa9F9b2DA9caaAdF57c8f9c22",
+    "isBaseToken": false,
+    "balanceLoaded": false
+  },
+  {
+    "img": "",
+    "name": "Ultra Token",
+    "symbol": "Ultra Token",
+    "contractAddress": "0x45317C81123Ec009fcf00240CE9bC11343373622",
+    "isBaseToken": false,
+    "balanceLoaded": false
+  }
+]
