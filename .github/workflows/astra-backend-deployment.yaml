@@ -47,9 +47,9 @@ jobs:
         id: backend_creds
         run: |
           echo "${{ secrets.ASTRA_BACKTEND_ENV }}" > .env
-          echo "${{ secrets.APRDETAILS }}" > aprdetails.json
-          echo "${{ secrets.ASTRAPRICE }}" > astraprice.json
-          echo "${{ secrets.LIQUIDITYMINING }}" > liquiditymining.json
+          echo "${{ secrets.APRDETAILS }}" > public/aprdetails.json
+          echo "${{ secrets.ASTRAPRICE }}" > public/astraprice.json
+          echo "${{ secrets.LIQUIDITYMINING }}" > public/liquiditymining.json
         env:
           TM_ENV_DEV: ${{ secrets.ASTRA_BACKTEND_ENV }}
           APRDETAILS: ${{ secrets.APRDETAILS }}
@@ -98,7 +98,7 @@ jobs:
           name: creds-artifact
           path: 
             .env
-            
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
