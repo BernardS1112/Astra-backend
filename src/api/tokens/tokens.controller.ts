@@ -75,7 +75,11 @@ export class TokensController {
           .readFileSync(
             path.resolve(
               __dirname,
-              `${appConfig.jsonFilepathInitials}astraPrice.json`
+              `${appConfig.jsonFilepathInitials}${
+                process.env.PROD_ENV === 'production'
+                  ? 'astraPrice.json'
+                  : 'astraPrice-test.json'
+              }`
             )
           )
           .toString()
@@ -109,7 +113,12 @@ export class TokensController {
         )
       fs.writeFileSync(
         path.resolve(
-          __dirname + `/${appConfig.jsonFilepathInitials}astraPrice.json`
+          __dirname +
+            `/${appConfig.jsonFilepathInitials}${
+              process.env.PROD_ENV === 'production'
+                ? 'astraPrice.json'
+                : 'astraPrice-test.json'
+            }`
         ),
         JSON.stringify(tokenPrice)
       )
@@ -170,7 +179,11 @@ export class TokensController {
         .readFileSync(
           path.resolve(
             __dirname,
-            `${appConfig.jsonFilepathInitials}astraPrice.json`
+            `${appConfig.jsonFilepathInitials}${
+              process.env.PROD_ENV === 'production'
+                ? 'astraPrice.json'
+                : 'astraPrice-test.json'
+            }`
           )
         )
         .toString()
@@ -188,7 +201,12 @@ export class TokensController {
     const jsonData = JSON.stringify(finalData)
     fs.writeFileSync(
       path.resolve(
-        __dirname + `/${appConfig.jsonFilepathInitials}aprdetails.json`
+        __dirname +
+          `/${appConfig.jsonFilepathInitials}${
+            process.env.PROD_ENV === 'production'
+              ? 'aprdetails.json'
+              : 'aprdetails-test.json'
+          }`
       ),
       jsonData
     )

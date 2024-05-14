@@ -77,6 +77,7 @@ class App {
       }
       return config
     })
+
   }
 
   private async initRouters(): Promise<void> {
