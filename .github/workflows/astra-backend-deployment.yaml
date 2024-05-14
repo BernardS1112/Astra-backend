@@ -1,0 +1,133 @@
+name: Deploy Astra to GKE
+on:
+  push:
+    branches:
+        - mainnet
+        - staging
+        - testnet
+        - feature/**
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+        - mainnet
+        - staging
+        - testnet
+        - feature/**
+
+jobs:
+  sonar-scan:
+    name: "SonarCloud Scan"
+    runs-on: ubuntu-latest
+    steps: 
+      - name: "Checkout repository on branch: ${{ github.REF }}"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.HEAD_REF }}
+          fetch-depth: 0
+
+      - name: ES Lint
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+    
+      - run: npm install -g pnpm
+      - run: pnpm install
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    
+  write-creds-from-secrets:
+    name: "Write env from secrets"
+    runs-on: ubuntu-latest
+    needs: [sonar-scan]
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Get branch names.
+        id: branch-names
+        uses: tj-actions/branch-names@v8
+
+      - name: Write backend .env from secrets
+        id: backend_creds
+        run: |
+          echo "${{ secrets.ASTRA_BACKTEND_ENV }}" > .env
+        env:
+          TM_ENV_DEV: ${{ secrets.ASTRA_BACKTEND_ENV }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: creds-artifact
+          path: .env
+    
+  docker-build-and-push:
+    name: "Docker Build and Push"
+    runs-on: ubuntu-latest
+    needs: [sonar-scan, write-creds-from-secrets]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: creds-artifact
+          path: .
+    
+      - name: Get branch names.
+        id: branch-names
+        uses: tj-actions/branch-names@v8
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GKE_SA_KEY }}
+
+      - name: Build alpha docker image
+        if: ${{ steps.branch-names.outputs.ref_branch != 'mainnet' }}
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          ls -la
+          cat .env
+          docker build -t us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:testnet-${GITHUB_SHA::7} .
+
+      - name: Push image to alpha repo if branch is development
+        if: (github.ref == 'refs/heads/testnet') && (github.event.pull_request.merged == true || github.event_name == 'push')
+        run: |
+          docker push us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:testnet-${GITHUB_SHA::7}
+    
+  release-to-k8s:
+    name: "Release to k8s"
+    runs-on: ubuntu-latest
+    needs: [sonar-scan, docker-build-and-push, write-creds-from-secrets]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate to Google Cloud
+
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GKE_SA_KEY }}
+
+      - name: Get branch names.
+        id: branch-names
+        uses: tj-actions/branch-names@v8
+
+      - name: "Get alpha GKE credentials"
+        if: ${{ steps.branch-names.outputs.ref_branch != 'mainnet' }}
+        uses: "google-github-actions/get-gke-credentials@v2"
+        with:
+          cluster_name: "cluster-alpha-us-central1"
+          location: "us-central1"
+
+      - name: Deploy to cluster
+        if: (github.ref == 'refs/heads/mainnet' || github.ref == 'refs/heads/testnet') && (github.event.pull_request.merged == true || github.event_name == 'push')
+        run: |
+          helm upgrade --install astra-backend helm/astra-backend \
+          --namespace astra-testnet \
+          --values ./helm/astra-backend/values.yaml \
+          --set image.tag=testnet-${GITHUB_SHA::7} \
+          --timeout 5m0s --create-namespace --debug

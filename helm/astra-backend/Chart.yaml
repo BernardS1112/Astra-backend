@@ -1,0 +1,7 @@
+apiVersion: v2
+name: astra-backend
+description: A Kubernetes Helm chart for Astra Backend
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+icon: https://raw.githubusercontent.com/kubernetes/helm/master/docs/logos/helm.png
