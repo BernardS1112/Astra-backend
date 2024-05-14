@@ -71,26 +71,26 @@ jobs:
           path: |
             .env
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: aprdetails
-          path: |
-            public/aprdetails.json
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: aprdetails
+      #     path: |
+      #       public/aprdetails.json
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: astraprice
-          path: |
-            public/astraprice.json
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: astraprice
+      #     path: |
+      #       public/astraprice.json
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: liquiditymining
-          path: |
-            public/liquiditymining.json
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: liquiditymining
+      #     path: |
+      #       public/liquiditymining.json
     
   docker-build-and-push:
     name: "Docker Build and Push"
@@ -107,23 +107,23 @@ jobs:
           path: .
             
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: aprdetails
-          path: ./public
+      # - name: Download artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: aprdetails
+      #     path: ./public
       
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: astraprice
-          path: ./public
+      # - name: Download artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: astraprice
+      #     path: ./public
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: liquiditymining
-          path: ./public
+      # - name: Download artifacts
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: liquiditymining
+      #     path: ./public
     
       - name: Get branch names.
         id: branch-names
