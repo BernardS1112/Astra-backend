@@ -55,14 +55,8 @@ jobs:
         id: backend_creds
         run: |
           echo "${{ secrets.ASTRA_BACKTEND_ENV }}" > .env
-          echo "${{ secrets.APRDETAILS }}" > public/aprdetails.json
-          echo "${{ secrets.ASTRAPRICE }}" > public/astraprice.json
-          echo "${{ secrets.LIQUIDITYMINING }}" > public/liquiditymining.json
         env:
           TM_ENV_DEV: ${{ secrets.ASTRA_BACKTEND_ENV }}
-          APRDETAILS: ${{ secrets.APRDETAILS }}
-          ASTRAPRICE: ${{ secrets.ASTRAPRICE }}
-          LIQUIDITYMINING: ${{ secrets.LIQUIDITYMINING }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -140,9 +134,6 @@ jobs:
           gcloud auth configure-docker us-central1-docker.pkg.dev
           ls -la
           cat .env
-          cat public/aprdetails.json
-          cat public/astraprice.json
-          cat public/liquiditymining.json
           docker build -t us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:testnet-${GITHUB_SHA::7} .
 
       - name: Push image to alpha repo if branch is development
