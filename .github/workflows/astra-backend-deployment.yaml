@@ -62,29 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: creds-artifact
-          path: |
-            .env
-
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: aprdetails
-      #     path: |
-      #       public/aprdetails.json
-
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: astraprice
-      #     path: |
-      #       public/astraprice.json
-
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: liquiditymining
-      #     path: |
-      #       public/liquiditymining.json
+          path: .env
     
   docker-build-and-push:
     name: "Docker Build and Push"
@@ -99,25 +77,6 @@ jobs:
         with:
           name: creds-artifact
           path: .
-            
-
-      # - name: Download artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: aprdetails
-      #     path: ./public
-      
-      # - name: Download artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: astraprice
-      #     path: ./public
-
-      # - name: Download artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: liquiditymining
-      #     path: ./public
     
       - name: Get branch names.
         id: branch-names
@@ -158,7 +117,7 @@ jobs:
         uses: tj-actions/branch-names@v8
 
       - name: "Get alpha GKE credentials"
-        if: ${{ steps.branch-names.outputs.ref_branch != 'master' }}
+        if: ${{ steps.branch-names.outputs.ref_branch != 'mainnet' }}
         uses: "google-github-actions/get-gke-credentials@v2"
         with:
           cluster_name: "cluster-alpha-us-central1"
