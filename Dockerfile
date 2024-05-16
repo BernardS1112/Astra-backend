@@ -5,11 +5,32 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 WORKDIR /app
 COPY . .
-COPY .env ./.env
-RUN pnpm install
+
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
+
+
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
 FROM base
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
 EXPOSE 3000
 
+
+RUN rm -rf /app/gcpKeyFile.json
 CMD [ "pnpm", "start:build" ]
+
+# # WORKDIR /app
+
+# # COPY . .
+
+# RUN npm i pnpm -g
+
+# RUN pnpm i --frozen-lockfile
+
+# RUN pnpm run build
+# CMD ["pnpm", "start"]
+
