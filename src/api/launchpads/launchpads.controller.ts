@@ -341,7 +341,9 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           }',
           TEAM_DESCRIPTION = '${escapedTeamDescription || ''}',
           SALE_ROUND_DETAIL = '${launchpadData?.saleRoundDetail || ''}',
-          PROJECT_IMAGE = '${launchpadData?.projectImage || ''}'
+          PROJECT_IMAGE = '${launchpadData?.projectImage || ''}',
+          LEAD_VC_IMAGE = '${launchpadData?.leadVCImage || ''}',
+          MARKET_MAKER_IMAGE = '${launchpadData?.marketMakerImage || ''}'
 WHERE ID = '${launchpadId}';`
       const [updateRes] = await db.query(queryLaunchpadDetail)
       res.status(200).json({ status: 200, data: updateRes })
