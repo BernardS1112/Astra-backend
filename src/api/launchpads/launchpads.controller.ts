@@ -346,6 +346,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           MARKET_MAKER_IMAGE = '${launchpadData?.marketMakerImage || ''}',
           MEDIUM = '${launchpadData?.medium || ''}',
           GITHUB = '${launchpadData?.github || ''}',
+          RAISED = '${launchpadData?.raised || ''}',
           PROJECT_DECK = '${launchpadData?.projectDeck || ''}'
 WHERE ID = '${launchpadId}';`
       const [updateRes] = await db.query(queryLaunchpadDetail)
