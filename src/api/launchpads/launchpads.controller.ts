@@ -253,7 +253,51 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         launchpadData.projectDescriptionDetail
       )
 
-      const queryLaunchpadDetail = `INSERT INTO ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_DETAIL} (ID, OWNER, STATUS, LAUNCHPAD_ADDRESS, LAUNCHPAD_TOKEN_ADDRESS, LAUNCHPAD_TOKEN_NAME, LAUNCHPAD_TOKEN_SYMBOL, LAUNCHPAD_TOKEN_TOTAL_SUPPLY, LAUNCHPAD_TOKEN_DECIMAL, LAUNCHPAD_TOKEN_PRICE, LAUNCHPAD_TOKEN_FDV, TOTAL_SALE_AMOUNT, SALE_START_TIME, SALE_END_TIME, MAX_PURCHASE_BASE_AMOUNT, SOFT_CAP, HARD_CAP, INITIAL_MARKET_CAP, PROJECT_VALUATION, PROJECT_DETAIL, TEAM_INFO, METRICS, WEBSITE_URL, WHITEPAPER_URL, TWITTER, TELEGRAM, DISCORD, OTHER_URL, EMAIL, INVESTOR_DETAIL, CHAIN, LEAD_VC, MARKET_MAKER, CONTROLLED_CAP, DAO_APPROVED_METRICS, TOKEN_TYPE, IS_VESTING, BASE_TOKEN, VEST_START, VEST_CLIFF, VEST_DURATION, VEST_SLICE_PERIOD_SECONDS, VEST_INITIAL_UNLOCK, REQUEST_TRANSACTION, APPROVE_TRANSACTION, PROJECT_DESCRIPTION_DETAIL, PROJECT_IMAGE, MEDIUM, GITHUB, PROJECT_DECK, RAISED) VALUES ('${newId}', '${launchpadData.owner}', 'requested', '${launchpadData.launchpadAddress}', '${launchpadData.launchpadTokenAddress}', '${launchpadData.launchpadTokenName}', '${launchpadData.launchpadTokenSymbol}', '${launchpadData.launchpadTotalSupply}', '${launchpadData.launchpadTokenDecimal}', '${launchpadData.launchpadTokenPrice}', '${launchpadData.launchpadTokenFDV}', '${launchpadData.totalSaleAmount}', '${launchpadData.saleStartTime}', '${launchpadData.saleEndTime}', '${launchpadData.maxPurchaseBaseAmount}', '${launchpadData.softCap}', '${launchpadData.hardCap}', '${launchpadData.initialMarketCap}', '${launchpadData.projectValuation}', '${launchpadData.projectDetail}', '${launchpadData.teamInfo}', '${launchpadData.metrics}', '${launchpadData.websiteUrl}', '${launchpadData.whitepaperUrl}', '${launchpadData.twitter}', '${launchpadData.telegram}', '${launchpadData.discord}', '${launchpadData.otherUrl}', '${launchpadData.email}', '${launchpadData.investorDetail}', '${launchpadData.chain}', '${launchpadData.leadVC}', '${launchpadData.marketMaker}', '${launchpadData.controlledCap}', '${launchpadData.daoApprovedMetrics}', '${launchpadData.tokenType}', '${launchpadData.isVesting}', '${launchpadData.baseToken}', '${launchpadData.vest_start}', '${launchpadData.vest_cliff}', '${launchpadData.vest_duration}', '${launchpadData.vest_slice_period_seconds}', '${launchpadData.vest_initial_unlock}', '${launchpadData.requestTransaction}', '${launchpadData.approveTransaction}', '${escapedProjectDescriptionDetail}', '${launchpadData.projectImage}', '${launchpadData.medium}', '${launchpadData.github}', '${launchpadData.projectDeck}', '${launchpadData.raised}');`
+      const queryLaunchpadDetail = `INSERT INTO ${
+        databaseDetails.SCHEMA_NAME
+      }.${
+        databaseDetails.LAUNCHPAD_DETAIL
+      } (ID, OWNER, STATUS, LAUNCHPAD_ADDRESS, LAUNCHPAD_TOKEN_ADDRESS, LAUNCHPAD_TOKEN_NAME, LAUNCHPAD_TOKEN_SYMBOL, LAUNCHPAD_TOKEN_TOTAL_SUPPLY, LAUNCHPAD_TOKEN_DECIMAL, LAUNCHPAD_TOKEN_PRICE, LAUNCHPAD_TOKEN_FDV, TOTAL_SALE_AMOUNT, SALE_START_TIME, SALE_END_TIME, MAX_PURCHASE_BASE_AMOUNT, SOFT_CAP, HARD_CAP, INITIAL_MARKET_CAP, PROJECT_VALUATION, PROJECT_DETAIL, TEAM_INFO, METRICS, WEBSITE_URL, WHITEPAPER_URL, TWITTER, TELEGRAM, DISCORD, OTHER_URL, EMAIL, INVESTOR_DETAIL, CHAIN, LEAD_VC, MARKET_MAKER, CONTROLLED_CAP, DAO_APPROVED_METRICS, TOKEN_TYPE, IS_VESTING, BASE_TOKEN, VEST_START, VEST_CLIFF, VEST_DURATION, VEST_SLICE_PERIOD_SECONDS, VEST_INITIAL_UNLOCK, REQUEST_TRANSACTION, APPROVE_TRANSACTION, PROJECT_DESCRIPTION_DETAIL, PROJECT_IMAGE, MEDIUM, GITHUB, PROJECT_DECK, RAISED) VALUES ('${newId}', '${
+        launchpadData.owner
+      }', 'requested', '${launchpadData.launchpadAddress}', '${
+        launchpadData.launchpadTokenAddress
+      }', '${launchpadData.launchpadTokenName}', '${
+        launchpadData.launchpadTokenSymbol
+      }', '${launchpadData.launchpadTotalSupply}', '${
+        launchpadData.launchpadTokenDecimal
+      }', '${launchpadData.launchpadTokenPrice}', '${
+        launchpadData.launchpadTokenFDV
+      }', '${launchpadData.totalSaleAmount}', '${
+        launchpadData.saleStartTime
+      }', '${launchpadData.saleEndTime}', '${
+        launchpadData.maxPurchaseBaseAmount
+      }', '${launchpadData.softCap}', '${launchpadData.hardCap}', '${
+        launchpadData.initialMarketCap
+      }', '${launchpadData.projectValuation}', '${
+        launchpadData.projectDetail
+      }', '${launchpadData.teamInfo}', '${launchpadData.metrics}', '${
+        launchpadData.websiteUrl
+      }', '${launchpadData.whitepaperUrl}', '${launchpadData.twitter}', '${
+        launchpadData.telegram
+      }', '${launchpadData.discord}', '${launchpadData.otherUrl}', '${
+        launchpadData.email
+      }', '${launchpadData.investorDetail}', '${launchpadData.chain}', '${
+        launchpadData.leadVC
+      }', '${launchpadData.marketMaker}', '${launchpadData.controlledCap}', '${
+        launchpadData.daoApprovedMetrics
+      }', '${launchpadData.tokenType}', '${launchpadData.isVesting}', '${
+        launchpadData.baseToken
+      }', '${launchpadData.vest_start}', '${launchpadData.vest_cliff}', '${
+        launchpadData.vest_duration
+      }', '${launchpadData.vest_slice_period_seconds}', '${
+        launchpadData.vest_initial_unlock
+      }', '${launchpadData.requestTransaction}', '${
+        launchpadData.approveTransaction
+      }', '${escapedProjectDescriptionDetail}', '${
+        launchpadData.projectImage
+      }', '${launchpadData.medium}', '${launchpadData.github}', '${
+        launchpadData.projectDeck
+      }', '${launchpadData.raised || 0}');`
 
       const [launchpadDetailRes] = await db.query(queryLaunchpadDetail)
       res.status(200).json({ status: 200, data: launchpadDetailRes, id: newId })
@@ -346,7 +390,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           MARKET_MAKER_IMAGE = '${launchpadData?.marketMakerImage || ''}',
           MEDIUM = '${launchpadData?.medium || ''}',
           GITHUB = '${launchpadData?.github || ''}',
-          RAISED = '${launchpadData?.raised || ''}',
+          RAISED = '${launchpadData?.raised || 0}',
           PROJECT_DECK = '${launchpadData?.projectDeck || ''}'
 WHERE ID = '${launchpadId}';`
       const [updateRes] = await db.query(queryLaunchpadDetail)
