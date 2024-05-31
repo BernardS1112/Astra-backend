@@ -18,6 +18,7 @@ import {
   transactionsRoutes,
   usersRoutes,
   launchpadsRoutes,
+  checkIPRoutes,
 } from './api'
 import { SnowflakeServiceAbstract } from './lib/snowflake'
 import dotenv from 'dotenv'
@@ -28,6 +29,7 @@ import { publicProvider } from '@wagmi/core/providers/public'
 import { arbitrum } from 'viem/chains'
 import { chainConfigs } from './config/chain.config'
 import axios from 'axios'
+import requestIp from 'request-ip'
 
 class App {
   public express: Application
@@ -77,11 +79,12 @@ class App {
       }
       return config
     })
-
   }
 
   private async initRouters(): Promise<void> {
     this.express.use(bodyparser.json())
+    this.express.use(requestIp.mw())
+    this.express.use('/checkip', checkIPRoutes)
     this.express.use('/proposals', proposalsRoutes)
     this.express.use('/pools', poolsRoutes)
     this.express.use('/tokens', tokensRoutes)
