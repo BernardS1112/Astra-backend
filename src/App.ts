@@ -29,7 +29,6 @@ import { publicProvider } from '@wagmi/core/providers/public'
 import { arbitrum } from 'viem/chains'
 import { chainConfigs } from './config/chain.config'
 import axios from 'axios'
-import requestIp from 'request-ip'
 
 class App {
   public express: Application
