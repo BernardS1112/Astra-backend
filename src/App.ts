@@ -83,7 +83,6 @@ class App {
 
   private async initRouters(): Promise<void> {
     this.express.use(bodyparser.json())
-    this.express.use(requestIp.mw())
     this.express.use('/checkip', checkIPRoutes)
     this.express.use('/proposals', proposalsRoutes)
     this.express.use('/pools', poolsRoutes)
