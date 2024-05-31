@@ -257,7 +257,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         databaseDetails.SCHEMA_NAME
       }.${
         databaseDetails.LAUNCHPAD_DETAIL
-      } (ID, OWNER, STATUS, LAUNCHPAD_ADDRESS, LAUNCHPAD_TOKEN_ADDRESS, LAUNCHPAD_TOKEN_NAME, LAUNCHPAD_TOKEN_SYMBOL, LAUNCHPAD_TOKEN_TOTAL_SUPPLY, LAUNCHPAD_TOKEN_DECIMAL, LAUNCHPAD_TOKEN_PRICE, LAUNCHPAD_TOKEN_FDV, TOTAL_SALE_AMOUNT, SALE_START_TIME, SALE_END_TIME, MAX_PURCHASE_BASE_AMOUNT, SOFT_CAP, HARD_CAP, INITIAL_MARKET_CAP, PROJECT_VALUATION, PROJECT_DETAIL, TEAM_INFO, METRICS, WEBSITE_URL, WHITEPAPER_URL, TWITTER, TELEGRAM, DISCORD, OTHER_URL, EMAIL, INVESTOR_DETAIL, CHAIN, LEAD_VC, MARKET_MAKER, CONTROLLED_CAP, DAO_APPROVED_METRICS, TOKEN_TYPE, IS_VESTING, BASE_TOKEN, VEST_START, VEST_CLIFF, VEST_DURATION, VEST_SLICE_PERIOD_SECONDS, VEST_INITIAL_UNLOCK, REQUEST_TRANSACTION, APPROVE_TRANSACTION, PROJECT_DESCRIPTION_DETAIL, PROJECT_IMAGE, MEDIUM, GITHUB, PROJECT_DECK, RAISED) VALUES ('${newId}', '${
+      } (ID, OWNER, STATUS, LAUNCHPAD_ADDRESS, LAUNCHPAD_TOKEN_ADDRESS, LAUNCHPAD_TOKEN_NAME, LAUNCHPAD_TOKEN_SYMBOL, LAUNCHPAD_TOKEN_TOTAL_SUPPLY, LAUNCHPAD_TOKEN_DECIMAL, LAUNCHPAD_TOKEN_PRICE, LAUNCHPAD_TOKEN_FDV, TOTAL_SALE_AMOUNT, SALE_START_TIME, SALE_END_TIME, MIN_PURCHASE_BASE_AMOUNT, MAX_PURCHASE_BASE_AMOUNT, SOFT_CAP, HARD_CAP, INITIAL_MARKET_CAP, PROJECT_VALUATION, PROJECT_DETAIL, TEAM_INFO, METRICS, WEBSITE_URL, WHITEPAPER_URL, TWITTER, TELEGRAM, DISCORD, OTHER_URL, EMAIL, INVESTOR_DETAIL, CHAIN, LEAD_VC, MARKET_MAKER, CONTROLLED_CAP, DAO_APPROVED_METRICS, TOKEN_TYPE, IS_VESTING, BASE_TOKEN, VEST_START, VEST_CLIFF, VEST_DURATION, VEST_SLICE_PERIOD_SECONDS, VEST_INITIAL_UNLOCK, REQUEST_TRANSACTION, APPROVE_TRANSACTION, PROJECT_DESCRIPTION_DETAIL, PROJECT_IMAGE, MEDIUM, GITHUB, PROJECT_DECK, RAISED) VALUES ('${newId}', '${
         launchpadData.owner
       }', 'requested', '${launchpadData.launchpadAddress}', '${
         launchpadData.launchpadTokenAddress
@@ -270,28 +270,30 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
       }', '${launchpadData.totalSaleAmount}', '${
         launchpadData.saleStartTime
       }', '${launchpadData.saleEndTime}', '${
-        launchpadData.maxPurchaseBaseAmount
-      }', '${launchpadData.softCap}', '${launchpadData.hardCap}', '${
-        launchpadData.initialMarketCap
-      }', '${launchpadData.projectValuation}', '${
-        launchpadData.projectDetail
-      }', '${launchpadData.teamInfo}', '${launchpadData.metrics}', '${
-        launchpadData.websiteUrl
-      }', '${launchpadData.whitepaperUrl}', '${launchpadData.twitter}', '${
-        launchpadData.telegram
-      }', '${launchpadData.discord}', '${launchpadData.otherUrl}', '${
-        launchpadData.email
-      }', '${launchpadData.investorDetail}', '${launchpadData.chain}', '${
-        launchpadData.leadVC
-      }', '${launchpadData.marketMaker}', '${launchpadData.controlledCap}', '${
-        launchpadData.daoApprovedMetrics
-      }', '${launchpadData.tokenType}', '${launchpadData.isVesting}', '${
-        launchpadData.baseToken
-      }', '${launchpadData.vest_start}', '${launchpadData.vest_cliff}', '${
-        launchpadData.vest_duration
-      }', '${launchpadData.vest_slice_period_seconds}', '${
-        launchpadData.vest_initial_unlock
-      }', '${launchpadData.requestTransaction}', '${
+        launchpadData.minPurchaseBaseAmount
+      }',  '${launchpadData.maxPurchaseBaseAmount}', '${
+        launchpadData.softCap
+      }', '${launchpadData.hardCap}', '${launchpadData.initialMarketCap}', '${
+        launchpadData.projectValuation
+      }', '${launchpadData.projectDetail}', '${launchpadData.teamInfo}', '${
+        launchpadData.metrics
+      }', '${launchpadData.websiteUrl}', '${launchpadData.whitepaperUrl}', '${
+        launchpadData.twitter
+      }', '${launchpadData.telegram}', '${launchpadData.discord}', '${
+        launchpadData.otherUrl
+      }', '${launchpadData.email}', '${launchpadData.investorDetail}', '${
+        launchpadData.chain
+      }', '${launchpadData.leadVC}', '${launchpadData.marketMaker}', '${
+        launchpadData.controlledCap
+      }', '${launchpadData.daoApprovedMetrics}', '${
+        launchpadData.tokenType
+      }', '${launchpadData.isVesting}', '${launchpadData.baseToken}', '${
+        launchpadData.vest_start
+      }', '${launchpadData.vest_cliff}', '${launchpadData.vest_duration}', '${
+        launchpadData.vest_slice_period_seconds
+      }', '${launchpadData.vest_initial_unlock}', '${
+        launchpadData.requestTransaction
+      }', '${
         launchpadData.approveTransaction
       }', '${escapedProjectDescriptionDetail}', '${
         launchpadData.projectImage
@@ -347,6 +349,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           TOTAL_SALE_AMOUNT = '${launchpadData.totalSaleAmount}', 
           SALE_START_TIME = '${launchpadData.saleStartTime}', 
           SALE_END_TIME = '${launchpadData.saleEndTime}', 
+          MIN_PURCHASE_BASE_AMOUNT = '${launchpadData.minPurchaseBaseAmount}', 
           MAX_PURCHASE_BASE_AMOUNT = '${launchpadData.maxPurchaseBaseAmount}', 
           SOFT_CAP = '${launchpadData.softCap}', 
           HARD_CAP = '${launchpadData.hardCap}', 
