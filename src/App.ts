@@ -18,6 +18,7 @@ import {
   transactionsRoutes,
   usersRoutes,
   launchpadsRoutes,
+  checkIPRoutes,
 } from './api'
 import { SnowflakeServiceAbstract } from './lib/snowflake'
 import dotenv from 'dotenv'
@@ -77,11 +78,11 @@ class App {
       }
       return config
     })
-
   }
 
   private async initRouters(): Promise<void> {
     this.express.use(bodyparser.json())
+    this.express.use('/checkip', checkIPRoutes)
     this.express.use('/proposals', proposalsRoutes)
     this.express.use('/pools', poolsRoutes)
     this.express.use('/tokens', tokensRoutes)

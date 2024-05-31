@@ -1,5 +1,5 @@
 import { SnowflakeQueryInterface, SnowflakeResultInterface } from '@/types'
-import { configure, createPool, Statement } from 'snowflake-sdk'
+import { configure, createPool } from 'snowflake-sdk'
 import dotenv from 'dotenv'
 import path from 'path'
 import { databaseDetails } from '@/config'
@@ -67,12 +67,12 @@ export class SnowflakeServiceAbstract {
             ? startIndex + Math.min(req.count, 999) - 1
             : startIndex + 999
 
-        await this.connectionPool.use(async (connection) =>
+        await this.connectionPool.use(async (connection: any) =>
           connection.execute({
             sqlText: req.query,
             binds: req.binds ? req.binds : [],
             streamResult: true,
-            complete: (completeErr, statement) => {
+            complete: (completeErr: any, statement: any) => {
               if (completeErr) {
                 console.error(completeErr)
                 reject(completeErr)
@@ -111,10 +111,10 @@ export class SnowflakeServiceAbstract {
       }
     })
 
-  private cancelStatementSnowflake = async (statement: Statement) =>
+  private cancelStatementSnowflake = async (statement: any) =>
     new Promise((resolve, reject) => {
       try {
-        statement.cancel((err, stmt) => {
+        statement.cancel((err: any, stmt: any) => {
           if (err) {
             console.error('Error while cancel statement: ', err.message)
             reject(err)
