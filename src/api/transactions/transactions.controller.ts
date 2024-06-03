@@ -89,7 +89,11 @@ export class TransactionsController {
       let jsonData = await fs.readFile(
         path.resolve(
           __dirname,
-          `${appConfig.jsonFilepathInitials}liquidityMining.json`
+          `${appConfig.jsonFilepathInitials}${
+            process.env.PROD_ENV === 'production'
+              ? 'liquidityMining.json'
+              : 'liquidityMining-test.json'
+          }`
         ),
         { encoding: 'utf8' }
       )
@@ -148,7 +152,11 @@ export class TransactionsController {
         await fs.readFile(
           path.resolve(
             __dirname,
-            `${appConfig.jsonFilepathInitials}aprdetails.json`
+            `${appConfig.jsonFilepathInitials}${
+              process.env.PROD_ENV === 'production'
+                ? 'aprdetails.json'
+                : 'aprdetails-test.json'
+            }`
           ),
           'utf8'
         )
@@ -170,7 +178,11 @@ export class TransactionsController {
       await fs.writeFile(
         path.resolve(
           __dirname,
-          `${appConfig.jsonFilepathInitials}liquidityMining.json`
+          `${appConfig.jsonFilepathInitials}${
+            process.env.PROD_ENV === 'production'
+              ? 'liquidityMining.json'
+              : 'liquidityMining-test.json'
+          }`
         ),
         jsonData
       )

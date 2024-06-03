@@ -328,7 +328,11 @@ export class ProposalsController {
       fs.readFileSync(
         path.resolve(
           __dirname,
-          `${appConfig.jsonFilepathInitials}aprdetails.json`
+          `${appConfig.jsonFilepathInitials}${
+            process.env.PROD_ENV === 'production'
+              ? 'aprdetails.json'
+              : 'aprdetails-test.json'
+          }`
         ),
         'utf-8'
       )
