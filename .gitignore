@@ -20,9 +20,6 @@ coverage
 .lock-wscript
 
 # public folder
-public/astraPrice.json
-public/aprdetails.json
-public/liquidityMining.json
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
