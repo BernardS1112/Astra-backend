@@ -179,3 +179,4 @@ jobs:
           --values ./helm/astra-backend/helmvars/mainnet/values.yaml \
           --set image.tag=testnet-${GITHUB_SHA::7} \
           --timeout 5m0s --create-namespace --debug
+          
