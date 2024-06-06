@@ -429,20 +429,47 @@ WHERE ID = '${launchpadId}';`
               'This address is already followed. Please try again another address',
           })
         } else {
-          const query = `MERGE INTO ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_FOLLOWING} AS target
+          const query = `MERGE INTO ${databaseDetails.SCHEMA_NAME}.${
+            databaseDetails.LAUNCHPAD_FOLLOWING
+          } AS target
         USING (SELECT '${data.address}' AS address) AS source
          ON target.USER = source.address
        WHEN MATCHED THEN
         UPDATE SET ${isFollowing} = TRUE
       WHEN NOT MATCHED THEN
-        INSERT (USER, ${isFollowing})
-        VALUES (source.address, TRUE);`
+        INSERT (USER, ${
+          isFollowing === 'IS_TELEGRAM_FOLLOWING' ? 'TELEGRAM_ID ,' : ''
+        } ${isFollowing})
+        VALUES (source.address, ${
+          isFollowing === 'IS_TELEGRAM_FOLLOWING' ? `${data.telegramId} ,` : ''
+        } TRUE);`
           const [insertRes] = await db.query(query)
           res.status(200).json({ status: 200, data: insertRes })
         }
       } else {
         res.status(400).json({ status: 400, error: 'request invalid' })
       }
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        error,
+      })
+    }
+  }
+
+  public static deleteAddress = async (req: Request, res: Response) => {
+    try {
+      res.setHeader('Access-Control-Allow-Origin', '*')
+      const userId = req.body.telegramId
+      const query = `MERGE INTO  ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_FOLLOWING} AS target
+      USING (SELECT ${userId} AS TELEGRAM_ID) AS source
+      ON target.TELEGRAM_ID = source.TELEGRAM_ID
+      WHEN MATCHED AND target.IS_TWITTER_FOLLOWING = TRUE THEN
+        UPDATE SET IS_TELEGRAM_FOLLOWING = FALSE
+      WHEN MATCHED AND target.IS_TWITTER_FOLLOWING = FALSE THEN
+        DELETE;`
+      const [insertRes] = await db.query(query)
+      res.status(200).json({ status: 200, data: insertRes })
     } catch (error) {
       res.status(500).json({
         status: 500,

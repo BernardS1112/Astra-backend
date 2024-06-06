@@ -20,6 +20,7 @@ launchpadsRoutes.post('/request', LaunchpadsController.requestLaunchpad)
 launchpadsRoutes.post('/update', LaunchpadsController.updateLaunchpad)
 launchpadsRoutes.post('/approve', LaunchpadsController.approveLaunchpads)
 launchpadsRoutes.post('/follow', LaunchpadsController.followAddress)
+launchpadsRoutes.post('/deleteFollowAddress', LaunchpadsController.deleteAddress)
 launchpadsRoutes.post(
   '/updateVestAddress',
   LaunchpadsController.updateVestAddress
