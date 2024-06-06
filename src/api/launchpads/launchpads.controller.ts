@@ -26,7 +26,7 @@ export class LaunchpadsController {
       if (filter !== 'None' && status !== 'admin') {
         if (filter === 'requested') {
           if (status === 'coming-soon')
-            FILTER_WHERE = `SALE_START_TIME > TO_TIMESTAMP(${curTime}) OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}))`
+            FILTER_WHERE = `(SALE_START_TIME > TO_TIMESTAMP(${curTime}) OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}))) AND STATUS = 'approved'`
           else FILTER_WHERE = `SALE_START_TIME > TO_TIMESTAMP(${curTime})`
         } else if (filter === 'approved') {
           FILTER_WHERE = `SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime})`
@@ -44,8 +44,10 @@ export class LaunchpadsController {
         : (WHERE = FILTER_WHERE)
       if (status !== 'admin' && status !== 'owner')
         WHERE =
+          // WHERE +
+          // ` AND ((SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'requested') OR (SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_END_TIME < TO_TIMESTAMP(${curTime}) AND STATUS = 'finished'))`
           WHERE +
-          ` AND ((SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'requested') OR (SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_END_TIME < TO_TIMESTAMP(${curTime}) AND STATUS = 'finished'))`
+          ` AND ((SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_END_TIME < TO_TIMESTAMP(${curTime}) AND STATUS = 'finished'))`
       if (chain !== 'None') WHERE = WHERE + ` AND CHAIN = '${chain}'`
       if (type !== 'all') WHERE = WHERE + ` AND TOKEN_TYPE = '${type}'`
       if (!!wallet && status === 'owner')
