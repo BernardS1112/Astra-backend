@@ -425,7 +425,9 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
             escapedProjectDescriptionDetail || ''
           }',
           TEAM_DESCRIPTION = '${escapedTeamDescription || ''}',
-          SALE_ROUND_DETAIL = '${launchpadData?.saleRoundDetail || ''}',
+          SALE_ROUND_DETAIL = '${
+            escapeStringForSQL(launchpadData?.saleRoundDetail) || ''
+          }',
           PROJECT_IMAGE = '${launchpadData?.projectImage || ''}',
           LEAD_VC_IMAGE = '${launchpadData?.leadVCImage || ''}',
           MARKET_MAKER_IMAGE = '${launchpadData?.marketMakerImage || ''}',
