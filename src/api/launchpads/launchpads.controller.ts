@@ -263,29 +263,41 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         launchpadData.owner
       }', 'requested', '${launchpadData.launchpadAddress}', '${
         launchpadData.launchpadTokenAddress
-      }', '${launchpadData.launchpadTokenName}', '${
-        launchpadData.launchpadTokenSymbol
-      }', '${launchpadData.launchpadTotalSupply}', '${
-        launchpadData.launchpadTokenDecimal
-      }', '${launchpadData.launchpadTokenPrice}', '${
-        launchpadData.launchpadTokenFDV
-      }', '${launchpadData.totalSaleAmount}', '${
-        launchpadData.saleStartTime
-      }', '${launchpadData.saleEndTime}', '${
+      }', '${escapeStringForSQL(
+        launchpadData.launchpadTokenName
+      )}', '${escapeStringForSQL(launchpadData.launchpadTokenSymbol)}', '${
+        launchpadData.launchpadTotalSupply
+      }', '${launchpadData.launchpadTokenDecimal}', '${
+        launchpadData.launchpadTokenPrice
+      }', '${launchpadData.launchpadTokenFDV}', '${
+        launchpadData.totalSaleAmount
+      }', '${launchpadData.saleStartTime}', '${launchpadData.saleEndTime}', '${
         launchpadData.minPurchaseBaseAmount
       }',  '${launchpadData.maxPurchaseBaseAmount}', '${
         launchpadData.softCap
       }', '${launchpadData.hardCap}', '${launchpadData.initialMarketCap}', '${
         launchpadData.projectValuation
-      }', '${launchpadData.projectDetail}', '${launchpadData.teamInfo}', '${
+      }', '${escapeStringForSQL(
+        launchpadData.projectDetail
+      )}', '${escapeStringForSQL(
+        launchpadData.teamInfo
+      )}', '${escapeStringForSQL(
         launchpadData.metrics
-      }', '${launchpadData.websiteUrl}', '${launchpadData.whitepaperUrl}', '${
+      )}', '${escapeStringForSQL(
+        launchpadData.websiteUrl
+      )}', '${escapeStringForSQL(
+        launchpadData.whitepaperUrl
+      )}', '${escapeStringForSQL(
         launchpadData.twitter
-      }', '${launchpadData.telegram}', '${launchpadData.discord}', '${
+      )}', '${escapeStringForSQL(
+        launchpadData.telegram
+      )}', '${escapeStringForSQL(launchpadData.discord)}', '${
         launchpadData.otherUrl
-      }', '${launchpadData.email}', '${launchpadData.investorDetail}', '${
-        launchpadData.chain
-      }', '${launchpadData.leadVC}', '${launchpadData.marketMaker}', '${
+      }', '${launchpadData.email}', '${escapeStringForSQL(
+        launchpadData.investorDetail
+      )}', '${launchpadData.chain}', '${escapeStringForSQL(
+        launchpadData.leadVC
+      )}', '${escapeStringForSQL(launchpadData.marketMaker)}', '${
         launchpadData.controlledCap
       }', '${launchpadData.daoApprovedMetrics}', '${
         launchpadData.tokenType
@@ -299,9 +311,11 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         launchpadData.approveTransaction
       }', '${escapedProjectDescriptionDetail}', '${
         launchpadData.projectImage
-      }', '${launchpadData.medium}', '${launchpadData.github}', '${
-        launchpadData.projectDeck
-      }', '${launchpadData.raised || 0}');`
+      }', '${escapeStringForSQL(launchpadData.medium)}', '${escapeStringForSQL(
+        launchpadData.github
+      )}', '${escapeStringForSQL(launchpadData.projectDeck)}', '${
+        launchpadData.raised || 0
+      }');`
 
       const [launchpadDetailRes] = await db.query(queryLaunchpadDetail)
       res.status(200).json({ status: 200, data: launchpadDetailRes, id: newId })
@@ -340,8 +354,12 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         launchpadData.launchpadAddress
       }', LAUNCHPAD_TOKEN_ADDRESS = '${
         launchpadData.launchpadTokenAddress
-      }', LAUNCHPAD_TOKEN_NAME = '${launchpadData.launchpadTokenName}', 
-          LAUNCHPAD_TOKEN_SYMBOL = '${launchpadData.launchpadTokenSymbol}', 
+      }', LAUNCHPAD_TOKEN_NAME = '${escapeStringForSQL(
+        launchpadData.launchpadTokenName
+      )}', 
+          LAUNCHPAD_TOKEN_SYMBOL = '${escapeStringForSQL(
+            launchpadData.launchpadTokenSymbol
+          )}', 
           LAUNCHPAD_TOKEN_TOTAL_SUPPLY = '${
             launchpadData.launchpadTotalSupply
           }', 
@@ -357,20 +375,26 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           HARD_CAP = '${launchpadData.hardCap}', 
           INITIAL_MARKET_CAP = '${launchpadData.initialMarketCap}', 
           PROJECT_VALUATION = '${launchpadData.projectValuation}', 
-          PROJECT_DETAIL = '${launchpadData.projectDetail}', 
-          TEAM_INFO = '${launchpadData.teamInfo}', 
-          METRICS = '${launchpadData.metrics}', 
-          WEBSITE_URL = '${launchpadData.websiteUrl}', 
-          WHITEPAPER_URL = '${launchpadData.whitepaperUrl}', 
-          TWITTER = '${launchpadData.twitter}', 
-          TELEGRAM = '${launchpadData.telegram}', 
-          DISCORD = '${launchpadData.discord}', 
+          PROJECT_DETAIL = '${escapeStringForSQL(
+            launchpadData.projectDetail
+          )}', 
+          TEAM_INFO = '${escapeStringForSQL(launchpadData.teamInfo)}', 
+          METRICS = '${escapeStringForSQL(launchpadData.metrics)}', 
+          WEBSITE_URL = '${escapeStringForSQL(launchpadData.websiteUrl)}', 
+          WHITEPAPER_URL = '${escapeStringForSQL(
+            launchpadData.whitepaperUrl
+          )}', 
+          TWITTER = '${escapeStringForSQL(launchpadData.twitter)}', 
+          TELEGRAM = '${escapeStringForSQL(launchpadData.telegram)}', 
+          DISCORD = '${escapeStringForSQL(launchpadData.discord)}', 
           OTHER_URL = '${launchpadData.otherUrl}', 
-          EMAIL = '${launchpadData.email}', 
-          INVESTOR_DETAIL = '${launchpadData.investorDetail}', 
+          EMAIL = '${escapeStringForSQL(launchpadData.email)}', 
+          INVESTOR_DETAIL = '${escapeStringForSQL(
+            launchpadData.investorDetail
+          )}', 
           CHAIN = '${launchpadData.chain}',
-          LEAD_VC = '${launchpadData.leadVC}',
-          MARKET_MAKER = '${launchpadData.marketMaker}',
+          LEAD_VC = '${escapeStringForSQL(launchpadData.leadVC)}',
+          MARKET_MAKER = '${escapeStringForSQL(launchpadData.marketMaker)}',
           CONTROLLED_CAP = '${launchpadData.controlledCap}',
           DAO_APPROVED_METRICS = '${launchpadData.daoApprovedMetrics}',
           TOKEN_TYPE = '${launchpadData.tokenType}', 
@@ -393,10 +417,12 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           PROJECT_IMAGE = '${launchpadData?.projectImage || ''}',
           LEAD_VC_IMAGE = '${launchpadData?.leadVCImage || ''}',
           MARKET_MAKER_IMAGE = '${launchpadData?.marketMakerImage || ''}',
-          MEDIUM = '${launchpadData?.medium || ''}',
-          GITHUB = '${launchpadData?.github || ''}',
+          MEDIUM = '${escapeStringForSQL(launchpadData?.medium || '')}',
+          GITHUB = '${escapeStringForSQL(launchpadData?.github || '')}',
           RAISED = '${launchpadData?.raised || 0}',
-          PROJECT_DECK = '${launchpadData?.projectDeck || ''}'
+          PROJECT_DECK = '${escapeStringForSQL(
+            launchpadData?.projectDeck || ''
+          )}'
 WHERE ID = '${launchpadId}';`
       const [updateRes] = await db.query(queryLaunchpadDetail)
       res.status(200).json({ status: 200, data: updateRes })
