@@ -378,8 +378,16 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           PROJECT_DETAIL = '${escapeStringForSQL(
             launchpadData.projectDetail
           )}', 
-          TEAM_INFO = '${escapeStringForSQL(launchpadData.teamInfo)}', 
-          METRICS = '${escapeStringForSQL(launchpadData.metrics)}', 
+          ${
+            launchpadData.teamInfo
+              ? `TEAM_INFO = '${escapeStringForSQL(launchpadData.teamInfo)}',`
+              : ''
+          } 
+          ${
+            launchpadData.metrics
+              ? `METRICS = '${escapeStringForSQL(launchpadData.metrics)}',`
+              : ''
+          } 
           WEBSITE_URL = '${escapeStringForSQL(launchpadData.websiteUrl)}', 
           WHITEPAPER_URL = '${escapeStringForSQL(
             launchpadData.whitepaperUrl
@@ -389,9 +397,13 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           DISCORD = '${escapeStringForSQL(launchpadData.discord)}', 
           OTHER_URL = '${launchpadData.otherUrl}', 
           EMAIL = '${escapeStringForSQL(launchpadData.email)}', 
-          INVESTOR_DETAIL = '${escapeStringForSQL(
+          ${
             launchpadData.investorDetail
-          )}', 
+              ? `INVESTOR_DETAIL = '${escapeStringForSQL(
+                  launchpadData.investorDetail
+                )}',`
+              : ''
+          } 
           CHAIN = '${launchpadData.chain}',
           LEAD_VC = '${escapeStringForSQL(launchpadData.leadVC)}',
           MARKET_MAKER = '${escapeStringForSQL(launchpadData.marketMaker)}',
