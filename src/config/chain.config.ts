@@ -1,5 +1,11 @@
 import { TChainConfig } from '@/types'
-import { arbitrum, polygonMumbai, mainnet, arbitrumSepolia } from '@wagmi/core/chains'
+import {
+  arbitrum,
+  polygonMumbai,
+  mainnet,
+  arbitrumSepolia,
+  bscTestnet,
+} from '@wagmi/core/chains'
 
 export const chainID = Number(process.env.CHAIN_NUMBER ?? arbitrum.id)
 
@@ -65,6 +71,21 @@ export const chainConfigs: TChainConfig = {
     utilityContractAddress: '0xc5e0930379fe53489F8f6e56351949c1B647518B',
     USDCContractAddress: '0xDEBC254Eb31c8a54DA05e586cbC7CF2e30ebb616',
     WETHContractAddress: '0x9c3c9283d3e44854697cd22d3faa240cfb032889',
+  },
+  [bscTestnet.id]: {
+    chainStackHTTPS:
+      'https://bsc-testnet.core.chainstack.com/be7c0598abf930ce4bf8377f17a2456b',
+    chainStackWS:
+      'wss://bsc-testnet.core.chainstack.com/be7c0598abf930ce4bf8377f17a2456b',
+    DAAContractAddress: '0x93Ee0bAcDbe4743a4fEEF68c91563ddCf913eD14',
+    DAOContractAddress: '0x7b251CF8a6b5382BcA1a6C414846Eb0749BD589E',
+    USDCContractAddress: '0x76fa6bab73779164738B1b1C8E3d1ecf0865D152',
+    WETHContractAddress: '0xae13d989dac2f0debff460ac112a837c89baa7cd',
+    iTokenStakingContractAddress: '0x828650Bc3270dD27B21914CDa1f2650dC23100a9',
+    chefContractAddress: '0x954Ba68d08fFe8F9cf33C13FCcCdf8376d18F04b',
+    astraContractAddress: '0x2850e9f193579b5Fc43459a9190Ab881AdE1ab98',
+    utilityContractAddress: '0xc5e0930379fe53489F8f6e56351949c1B647518B',
+    nftContractAddress: '0x6b2937Bde17889EDCf8fbD8dE31C3C2a70Bc4d65',
   },
 }
 
