@@ -59,7 +59,7 @@ export class LaunchpadsController {
  LIKE UPPER('%${search}%') ) `
 
       let query = `SELECT
-          *
+          *, COUNT(*) OVER() AS TOTAL
       FROM
           ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_DETAIL}
       WHERE ${WHERE}
