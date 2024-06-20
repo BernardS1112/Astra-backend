@@ -3,6 +3,12 @@ import { db } from '@/App'
 import { databaseDetails } from '@/config'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
+import { ethers } from 'ethers'
+
+// ABI of the CrossChainSaleManager contract
+const abi = [
+  'function getWeightedAverageMultiplier(address account) view returns (uint256)',
+]
 
 export class LaunchpadsController {
   public static getLaunchpadList = async (req: Request, res: Response) => {
@@ -611,6 +617,39 @@ WHERE ID = '${launchpadId}';`
         status: 500,
         error: error,
       })
+    }
+  }
+
+  // Function to connect to the contract and get the weighted average multiplier
+  public static getWeightedAverageMultiplier = async (
+    req: Request,
+    res: Response
+  ) => {
+    const { rpcUrl, contractAddress, userAddress } = req.body
+
+    if (!rpcUrl || !contractAddress || !userAddress) {
+      return res.status(400).json({
+        status: 400,
+        error: 'Missing required fields: rpcUrl, contractAddress, userAddress',
+      })
+    }
+
+    try {
+      // Create a provider using the RPC URL
+      const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+
+      // Create a contract instance
+      const contract = new ethers.Contract(contractAddress, abi, provider)
+
+      // Call the getWeightedAverageMultiplier function
+      const multiplier = await contract.getWeightedAverageMultiplier(
+        userAddress
+      )
+
+      res.status(200).json({ status: 200, data: multiplier.toString() })
+    } catch (error) {
+      console.error('Error in getWeightedAverageMultiplier:', error)
+      res.status(500).json({ status: 500, error: 'Internal server error' })
     }
   }
 }

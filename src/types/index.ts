@@ -32,6 +32,7 @@ export type TChainConfig = Record<
   {
     chainStackHTTPS: string
     chainStackWS: string
+    CrosschainSaleManagerAddress: `0x${string}`
     iTokenStakingContractAddress: `0x${string}`
     chefContractAddress: `0x${string}`
     astraContractAddress: `0x${string}`
