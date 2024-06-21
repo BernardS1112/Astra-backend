@@ -112,7 +112,7 @@ JOIN
         ASTRA_DB_DEV.BLOCKCHAIN.CONTRIBUTOR_TEST
 ) c ON ld.LAUNCHPAD_INDEX = c.LAUNCHPAD_INDEX
 WHERE
-c.CONTRIBUTOR_ADDRESS = '${wallet}';`
+c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
 
       const [resp] = await db.query(query)
       res.status(200).json({
