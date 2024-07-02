@@ -15,8 +15,7 @@ export const appConfig = {
   explorerAPIUrl:
     ENVIRONMENT === 'production'
       ? 'https://api.etherscan.io/api'
-      : // : 'https://api-testnet.polygonscan.com/api',
-        'https://api-sepolia.arbiscan.io/api',
+      : 'https://api-sepolia.arbiscan.io/api',
   fastTrackBlocks: ENVIRONMENT === 'production' ? 6500 : 500,
   requiredGovernorsForProposal: ENVIRONMENT === 'production' ? 33 : 1,
   usdcAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
