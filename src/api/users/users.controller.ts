@@ -63,45 +63,31 @@ export class UsersController {
         .slice(0, -1)
 
       const where = ids ? `IA.ITOKEN_INDEX IN (${ids}) OR ` : ''
-      const query = `
-      WITH LatestCumulativeROI AS (
-        SELECT
-          IA.ITOKEN_ADDR AS ITOKEN_ADDR,
-          IA.INDEX_CUMULATIVE_ROI * 100 AS ROI_NEW,
-          ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.DATE DESC) AS rn
-        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_CUMULATIVE_ROI_VIEW} IA
-      ),
-      LatestRiskScore AS (
-        SELECT
-          ITOKEN_ADDR,
-          "RANK" AS RISK_SCORE_NEW,
-          RANK() OVER(PARTITION BY ITOKEN_ADDR ORDER BY CREATED_AT DESC) AS rn
-        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_RISK_SCORE_PERCENTAGE}
-      )
-      SELECT
-        ID.*,
-        IA.*,
-        LC.ROI_NEW,
-        LR.RISK_SCORE_NEW
-      FROM
-        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_DETAILS_LATEST_SNAPSHOT_VIEW} IA
-      LEFT JOIN
-        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_AGGREGATES_LATEST_SNAPSHOT_VIEW} ID
-      ON
-        ID.ITOKEN_ADDR = IA.ITOKEN_ADDR
-      LEFT JOIN
-        LatestCumulativeROI LC
-      ON
-        LC.ITOKEN_ADDR = IA.ITOKEN_ADDR AND LC.rn = 1
-      LEFT JOIN
-        LatestRiskScore LR
-      ON
-        LR.ITOKEN_ADDR = IA.ITOKEN_ADDR AND LR.rn = 1
-      WHERE
-      ${where} IA.OWNER = '${userAddress}'
-      ORDER BY
-        IA.CREATED_AT DESC;
-      `
+      const query = `WITH LatestCumulativeROI AS (
+                        SELECT 
+                            IA.ITOKEN_ADDR AS ITOKEN_ADDR, 
+                            IA.INDEX_CUMULATIVE_ROI * 100 AS ROI_NEW, 
+                            ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.DATE DESC) AS rn
+                        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_CUMULATIVE_ROI_VIEW} IA
+                    )
+                    SELECT 
+                        ID.*, 
+                        IA.*,
+                        LC.ROI_NEW
+                    FROM 
+                        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_DETAILS_LATEST_SNAPSHOT_VIEW} IA
+                    LEFT JOIN 
+                        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_AGGREGATES_LATEST_SNAPSHOT_VIEW} ID 
+                    ON 
+                        ID.ITOKEN_ADDR = IA.ITOKEN_ADDR
+                    LEFT JOIN 
+                        LatestCumulativeROI LC 
+                    ON 
+                        LC.ITOKEN_ADDR = IA.ITOKEN_ADDR AND LC.rn = 1
+                    WHERE 
+                        ${where} IA.OWNER = '${userAddress}'
+                    ORDER BY 
+                        IA.CREATED_AT DESC;`
       const [resp] = await db.query(query)
       const baseStableCoinAddress = await readContract({
         address: chainConfig.DAAContractAddress,

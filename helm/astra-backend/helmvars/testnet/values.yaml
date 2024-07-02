@@ -1,0 +1,67 @@
+replicaCount: 2
+
+image:
+  repository: us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend
+  pullPolicy: IfNotPresent
+  tag: "1234567"
+
+serviceAccount:
+  create: true
+  automount: false
+  name: "astra-backend"
+
+service:
+  type: LoadBalancer
+  port: 3000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: 
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: api.next.test.astradao.org
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+  - secretName: tm-front-3-tls
+    hosts:
+       - api.next.test.astradao.org
+
+resources:
+  requests:
+    memory: "300Mi"
+    cpu: "250m"
+
+livenessProbe:
+  httpGet:
+    path: /indices
+    port: http
+readinessProbe:
+  httpGet:
+    path: /indices
+    port: http
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+volumeMounts:
+  - name: data-volume
+    mountPath: /data
+
+volumes:
+  - name: data-volume
+    persistentVolumeClaim:
+      claimName: data-pvc
+
+pvc:
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  storageClassName: standard-rwo

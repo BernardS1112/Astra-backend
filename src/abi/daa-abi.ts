@@ -2,12 +2,7 @@ export const DAAAbi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: false,
-        internalType: 'uint8',
-        name: 'version',
-        type: 'uint8',
-      },
+      { indexed: false, internalType: 'uint8', name: 'version', type: 'uint8' },
     ],
     name: 'Initialized',
     type: 'event',
@@ -21,12 +16,7 @@ export const DAAAbi = [
         name: 'poolIndex',
         type: 'uint256',
       },
-      {
-        indexed: false,
-        internalType: 'bool',
-        name: 'active',
-        type: 'bool',
-      },
+      { indexed: false, internalType: 'bool', name: 'active', type: 'bool' },
     ],
     name: 'SetPoolStatus',
     type: 'event',
@@ -34,24 +24,9 @@ export const DAAAbi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'src',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'dst',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'wad',
-        type: 'uint256',
-      },
+      { indexed: true, internalType: 'address', name: 'src', type: 'address' },
+      { indexed: true, internalType: 'address', name: 'dst', type: 'address' },
+      { indexed: false, internalType: 'uint256', name: 'wad', type: 'uint256' },
     ],
     name: 'Transfer',
     type: 'event',
@@ -59,12 +34,7 @@ export const DAAAbi = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'from',
-        type: 'address',
-      },
+      { indexed: true, internalType: 'address', name: 'from', type: 'address' },
       {
         indexed: false,
         internalType: 'uint256',
@@ -78,15 +48,15 @@ export const DAAAbi = [
   { stateMutability: 'payable', type: 'fallback' },
   {
     inputs: [],
-    name: 'ASTRTokenAddress',
+    name: 'ARBSYS_ADDRESS',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [],
-    name: 'Averageblockperday',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    name: 'ASTRTokenAddress',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -149,9 +119,23 @@ export const DAAAbi = [
   },
   {
     inputs: [],
+    name: 'averageblockperday',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'baseStableCoin',
     outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '_poolIndex', type: 'uint256' }],
+    name: 'buyPendingPoolBalance',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -180,11 +164,7 @@ export const DAAAbi = [
   },
   {
     inputs: [
-      {
-        internalType: 'uint256',
-        name: 'outstandingValue',
-        type: 'uint256',
-      },
+      { internalType: 'uint256', name: 'outstandingValue', type: 'uint256' },
       { internalType: 'uint256', name: 'indexValue', type: 'uint256' },
       { internalType: 'uint256', name: 'depositValue', type: 'uint256' },
     ],
@@ -205,16 +185,8 @@ export const DAAAbi = [
   },
   {
     inputs: [
-      {
-        internalType: 'address',
-        name: '_ASTRTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'poolConfiguration',
-        type: 'address',
-      },
+      { internalType: 'address', name: '_ASTRTokenAddress', type: 'address' },
+      { internalType: 'address', name: 'poolConfiguration', type: 'address' },
       { internalType: 'address', name: '_itokendeployer', type: 'address' },
       { internalType: 'address', name: '_chef', type: 'address' },
       { internalType: 'address', name: '_exchange', type: 'address' },
@@ -266,11 +238,7 @@ export const DAAAbi = [
       { internalType: 'bool', name: 'active', type: 'bool' },
       { internalType: 'uint256', name: 'rebaltime', type: 'uint256' },
       { internalType: 'uint256', name: 'threshold', type: 'uint256' },
-      {
-        internalType: 'uint256',
-        name: 'currentRebalance',
-        type: 'uint256',
-      },
+      { internalType: 'uint256', name: 'currentRebalance', type: 'uint256' },
       { internalType: 'uint256', name: 'lastrebalance', type: 'uint256' },
       { internalType: 'address', name: 'itokenaddr', type: 'address' },
       { internalType: 'address', name: 'owner', type: 'address' },
@@ -328,6 +296,31 @@ export const DAAAbi = [
     name: 'totalPoolbalance',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: '_poolChef', type: 'address' }],
+    name: 'updatPoolChefAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: '_avgblockperday', type: 'uint256' },
+    ],
+    name: 'updateAvgBlockPerDay',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '_managerAddresses', type: 'address' },
+    ],
+    name: 'updateManagerAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {

@@ -15,7 +15,8 @@ export const appConfig = {
   explorerAPIUrl:
     ENVIRONMENT === 'production'
       ? 'https://api.etherscan.io/api'
-      : 'https://api-testnet.polygonscan.com/api',
+      : // : 'https://api-testnet.polygonscan.com/api',
+        'https://api-sepolia.arbiscan.io/api',
   fastTrackBlocks: ENVIRONMENT === 'production' ? 6500 : 500,
   requiredGovernorsForProposal: ENVIRONMENT === 'production' ? 33 : 1,
   usdcAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
@@ -64,5 +65,6 @@ export const databaseDetails = {
   CONTRIBUTOR: 'CONTRIBUTOR_TEST',
   INDEX_CUMULATIVE_ROI_VIEW: 'INDEX_CUMULATIVE_ROI_VIEW',
   TOKEN_ROI_DETAILS_LATEST_VIEW_GRAPH: 'TOKEN_ROI_DETAILS_LATEST_VIEW_GRAPH',
-  INDEX_RISK_SCORE_PERCENTAGE:'INDEX_RISK_SCORE_PERCENTAGE'
+  INDEX_RISK_SCORE_PERCENTAGE: 'INDEX_RISK_SCORE_PERCENTAGE',
+  LAUNCHPAD_FOLLOWING: 'LAUNCHPAD_FOLLOWING_TEST',
 }
