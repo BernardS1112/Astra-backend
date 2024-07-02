@@ -23,44 +23,16 @@ export const chefAbi = [
     inputs: [
       {
         indexed: true,
-        internalType: 'uint256',
-        name: '_vault',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: '_vaultMultiplier',
-        type: 'uint256',
-      },
-    ],
-    name: 'AddVault',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
         internalType: 'address',
-        name: '_userAddress',
+        name: 'user',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'uint256',
-        name: '_amount',
+        name: 'pid',
         type: 'uint256',
       },
-    ],
-    name: 'ClaimedReward',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: 'address', name: 'user', type: 'address' },
-      { indexed: true, internalType: 'uint256', name: 'pid', type: 'uint256' },
       {
         indexed: false,
         internalType: 'uint256',
@@ -76,19 +48,16 @@ export const chefAbi = [
     inputs: [
       {
         indexed: true,
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        indexed: true,
         internalType: 'uint256',
-        name: 'rewardAmount',
+        name: 'pid',
         type: 'uint256',
       },
-    ],
-    name: 'DistributeReward',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: 'address', name: 'user', type: 'address' },
-      { indexed: true, internalType: 'uint256', name: 'pid', type: 'uint256' },
       {
         indexed: false,
         internalType: 'uint256',
@@ -102,28 +71,14 @@ export const chefAbi = [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: 'uint8', name: 'version', type: 'uint8' },
+      {
+        indexed: false,
+        internalType: 'uint8',
+        name: 'version',
+        type: 'uint8',
+      },
     ],
     name: 'Initialized',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'OwnershipTransferStarted',
     type: 'event',
   },
   {
@@ -149,85 +104,17 @@ export const chefAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: 'address',
-        name: '_userAddress',
+        name: 'user',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'uint256',
-        name: '_amount',
+        name: 'pid',
         type: 'uint256',
       },
-    ],
-    name: 'RestakedReward',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: '_allocPoint',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'bool',
-        name: '_withUpdate',
-        type: 'bool',
-      },
-    ],
-    name: 'Set',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: '_governanceAddress',
-        type: 'address',
-      },
-    ],
-    name: 'SetGovernanceAddress',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'contract IUniswapV3PositionUtility',
-        name: '_uniswapUtility',
-        type: 'address',
-      },
-    ],
-    name: 'SetUtilityContractAddress',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: '_contractAddress',
-        type: 'address',
-      },
-      { indexed: true, internalType: 'bool', name: '_value', type: 'bool' },
-    ],
-    name: 'WhitelistDepositContract',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      { indexed: true, internalType: 'address', name: 'user', type: 'address' },
-      { indexed: true, internalType: 'uint256', name: 'pid', type: 'uint256' },
       {
         indexed: false,
         internalType: 'uint256',
@@ -323,13 +210,6 @@ export const chefAbi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'acceptOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'contract IERC721',
@@ -347,10 +227,7 @@ export const chefAbi = [
     type: 'function',
   },
   {
-    inputs: [
-      { internalType: 'uint256', name: '_vault', type: 'uint256' },
-      { internalType: 'uint256', name: '_vaultMultiplier', type: 'uint256' },
-    ],
+    inputs: [{ internalType: 'uint256', name: '_vault', type: 'uint256' }],
     name: 'addVault',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -360,7 +237,11 @@ export const chefAbi = [
     inputs: [],
     name: 'astra',
     outputs: [
-      { internalType: 'contract IERC20Upgradeable', name: '', type: 'address' },
+      {
+        internalType: 'contract IERC20Upgradeable',
+        name: '',
+        type: 'address',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -444,25 +325,9 @@ export const chefAbi = [
       { internalType: 'uint256', name: '_vault', type: 'uint256' },
       { internalType: 'address', name: '_userAddress', type: 'address' },
     ],
-    name: 'depositWithUserAddress',
+    name: 'depositFromOtherContract',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_rewardAmount', type: 'uint256' },
-    ],
-    name: 'distributeAdditionalReward',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [{ internalType: 'address', name: '', type: 'address' }],
-    name: 'eligibleDistributionAddress',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -607,13 +472,6 @@ export const chefAbi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'pendingOwner',
-    outputs: [{ internalType: 'address', name: '', type: 'address' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     name: 'poolInfo',
     outputs: [
@@ -624,7 +482,11 @@ export const chefAbi = [
       },
       { internalType: 'uint256', name: 'allocPoint', type: 'uint256' },
       { internalType: 'uint256', name: 'lastRewardBlock', type: 'uint256' },
-      { internalType: 'uint256', name: 'accAstraPerShare', type: 'uint256' },
+      {
+        internalType: 'uint256',
+        name: 'accAstraPerShare',
+        type: 'uint256',
+      },
       { internalType: 'uint256', name: 'totalStaked', type: 'uint256' },
       { internalType: 'uint256', name: 'maxMultiplier', type: 'uint256' },
     ],
@@ -664,7 +526,11 @@ export const chefAbi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_governanceAddress', type: 'address' },
+      {
+        internalType: 'address',
+        name: '_governanceAddress',
+        type: 'address',
+      },
     ],
     name: 'setGovernanceAddress',
     outputs: [],
@@ -773,7 +639,11 @@ export const chefAbi = [
       { internalType: 'uint256', name: 'maxMultiplier', type: 'uint256' },
       { internalType: 'uint256', name: 'lastDeposit', type: 'uint256' },
       { internalType: 'bool', name: 'cooldown', type: 'bool' },
-      { internalType: 'uint256', name: 'cooldowntimestamp', type: 'uint256' },
+      {
+        internalType: 'uint256',
+        name: 'cooldowntimestamp',
+        type: 'uint256',
+      },
     ],
     stateMutability: 'view',
     type: 'function',
@@ -812,20 +682,14 @@ export const chefAbi = [
   },
   {
     inputs: [
-      { internalType: 'address', name: '_contractAddress', type: 'address' },
+      {
+        internalType: 'address',
+        name: '_contractAddress',
+        type: 'address',
+      },
       { internalType: 'bool', name: '_value', type: 'bool' },
     ],
     name: 'whitelistDepositContract',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_distributorAddress', type: 'address' },
-      { internalType: 'bool', name: '_value', type: 'bool' },
-    ],
-    name: 'whitelistDistributionAddress',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
