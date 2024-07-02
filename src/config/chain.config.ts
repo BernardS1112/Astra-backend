@@ -5,6 +5,7 @@ import {
   mainnet,
   arbitrumSepolia,
   bscTestnet,
+  base,
 } from '@wagmi/core/chains'
 
 export const chainID = Number(process.env.CHAIN_NUMBER ?? arbitrum.id)
@@ -15,13 +16,11 @@ export const chainConfigs: TChainConfig = {
       'https://nd-009-939-622.p2pify.com/0390ea2c5ea8c1d20e350e3a1c95f302',
     chainStackWS:
       'wss://ws-nd-009-939-622.p2pify.com/0390ea2c5ea8c1d20e350e3a1c95f302',
-    CrosschainSaleManagerAddress: '0x8f2Dad40EdD9661dADa834e4e5473c238B146527',
-    // iTokenStakingContractAddress: '0x2214363a217f113DaFf0dD58086d9F029a40FeaF',
+    CrosschainSaleManagerAddress: '0x0Af159a8E0B1282509663D8AceA2Bd59fcb1CCc8',
     iTokenStakingContractAddress: '0xB38b6827757b40c08BB83cfe7D9fB2e69D12CD3D',
     chefContractAddress: '0x6fE79b531b2b1d5378631B3Ab33B0994E297355E',
     astraContractAddress: '0xd3188e0df68559c0B63361f6160c57Ad88B239D8',
     DAOContractAddress: '0x8D9cbe442C664872A526cE65cfE0c4a4CfF89A7d',
-    // DAAContractAddress: '0x8e265fF847CC660Cd89786D4308076a9f921428f',
     DAAContractAddress: '0xFa3e6EC87941d4e29b1738F8F7f5C27B23Eb3f94',
     nftContractAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
     utilityContractAddress: '0x52ED59772BB1005e196E6baE3C25F6c25167feD4',
@@ -42,6 +41,22 @@ export const chainConfigs: TChainConfig = {
     nftContractAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
     utilityContractAddress: '0x1Df154042d0a7F1Cd093D907094A8ba5d83dF6C0',
     USDCContractAddress: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+    WETHContractAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+  },
+  [base.id]: {
+    chainStackHTTPS:
+      'https://nd-009-939-622.p2pify.com/0390ea2c5ea8c1d20e350e3a1c95f302',
+    chainStackWS:
+      'wss://ws-nd-009-939-622.p2pify.com/0390ea2c5ea8c1d20e350e3a1c95f302',
+    CrosschainSaleManagerAddress: '0x5b15FbE7aB98ad8000Cd50DA5A8906994f57e8F1',
+    iTokenStakingContractAddress: '0xB38b6827757b40c08BB83cfe7D9fB2e69D12CD3D',
+    chefContractAddress: '0x6fE79b531b2b1d5378631B3Ab33B0994E297355E',
+    astraContractAddress: '0xd3188e0df68559c0B63361f6160c57Ad88B239D8',
+    DAOContractAddress: '0x8D9cbe442C664872A526cE65cfE0c4a4CfF89A7d',
+    DAAContractAddress: '0xFa3e6EC87941d4e29b1738F8F7f5C27B23Eb3f94',
+    nftContractAddress: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+    utilityContractAddress: '0x52ED59772BB1005e196E6baE3C25F6c25167feD4',
+    USDCContractAddress: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     WETHContractAddress: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
   },
   [polygonMumbai.id]: {
