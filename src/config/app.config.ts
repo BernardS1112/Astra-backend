@@ -6,6 +6,11 @@ dotenv.config({
 })
 
 const ENVIRONMENT: string = process.env.PROD_ENV ?? 'development'
+
+console.log('========= STAGING ENV ON APP CONFIG ============')
+console.log(process.env.PROD_ENV)
+console.log('- ENVIRONTMENT: ', ENVIRONMENT)
+
 export const appConfig = {
   prod: ENVIRONMENT === 'production' ? true : false,
   infuraToken:
@@ -74,3 +79,6 @@ export const databaseDetails = {
   INDEX_RISK_SCORE_PERCENTAGE: 'INDEX_RISK_SCORE_PERCENTAGE',
   LAUNCHPAD_FOLLOWING: 'LAUNCHPAD_FOLLOWING_TEST',
 }
+
+console.log('============= DATABASE NAME ON STAGING =============')
+console.log(databaseDetails.SCHEMA_NAME)
