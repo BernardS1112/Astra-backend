@@ -12,4 +12,4 @@ RUN pnpm run build
 FROM base
 EXPOSE 3000
 
-CMD [ "pnpm", "start:build" ]
+CMD [ "pnpm", "start" ]
