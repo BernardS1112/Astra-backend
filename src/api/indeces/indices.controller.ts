@@ -115,31 +115,36 @@ export class IndicesController {
       res.setHeader('Access-Control-Allow-Origin', '*')
 
       const query = `WITH LatestIndicesDetails AS (
-                        SELECT IA.*, ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.CREATED_AT DESC) AS rn
-                        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_DETAILS_LATEST_SNAPSHOT_VIEW} IA
-                    ), 
-                    LatestAggregates AS (
-                        SELECT ID.*, ROW_NUMBER() OVER(PARTITION BY ID.ITOKEN_ADDR ORDER BY ID.CREATED_AT DESC) AS rn 
-                        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_AGGREGATES_LATEST_SNAPSHOT_VIEW} ID
-                    ), 
-                    LatestIndexDetails AS (
-                        SELECT ID.*, ROW_NUMBER() OVER(PARTITION BY ID.ITOKEN_ADDR ORDER BY ID.CREATED_AT DESC) AS rn 
-                        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_DETAILS} ID
-                    ), 
-                    LatestCumulativeROI AS (
-                        SELECT IA.ITOKEN_ADDR AS ITOKEN_ADDR1, IA.INDEX_CUMULATIVE_ROI*100 as ROI_NEW, IA.DATE, IA.DAILY_ROI_INDEX,
-                              ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.DATE DESC) AS rn
-                        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_CUMULATIVE_ROI_VIEW} IA
-                    )
-                    SELECT DISTINCT LA.*, LI.*, LID.THRESHOLD AS INDEX_THRESHOLD, LC.ITOKEN_ADDR1, LC.ROI_NEW AS ROI, LC.DATE, LC.DAILY_ROI_INDEX,
-                    ${databaseDetails.SCHEMA_NAME}.${databaseDetails.DELIST_INDEX}.ITOKEN_ADDRESS AS DELISTED_ADDRESS 
-                    FROM LatestIndicesDetails LI 
-                    LEFT JOIN LatestAggregates LA ON LA.ITOKEN_ADDR = LI.ITOKEN_ADDR AND LA.rn = 1 
-                    LEFT JOIN LatestIndexDetails LID ON LID.ITOKEN_ADDR = LI.ITOKEN_ADDR AND LID.rn = 1 
-                    LEFT JOIN LatestCumulativeROI LC ON LC.ITOKEN_ADDR1 = LI.ITOKEN_ADDR AND LC.rn = 1 
-                    LEFT JOIN ${databaseDetails.SCHEMA_NAME}.${databaseDetails.DELIST_INDEX} ON ${databaseDetails.DELIST_INDEX}.ITOKEN_ADDRESS = LI.ITOKEN_ADDR 
-                    WHERE LI.rn = 1 
-                    ORDER BY LI.CREATED_AT DESC;`
+        SELECT IA.*, ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.CREATED_AT DESC) AS rn
+        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_DETAILS_LATEST_SNAPSHOT_VIEW} IA
+    ), 
+    LatestAggregates AS (
+        SELECT ID.*, ROW_NUMBER() OVER(PARTITION BY ID.ITOKEN_ADDR ORDER BY ID.CREATED_AT DESC) AS rn 
+        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_AGGREGATES_LATEST_SNAPSHOT_VIEW} ID
+    ), 
+    LatestIndexDetails AS (
+        SELECT ID.*, ROW_NUMBER() OVER(PARTITION BY ID.ITOKEN_ADDR ORDER BY ID.CREATED_AT DESC) AS rn 
+        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_DETAILS} ID
+    ), 
+    LatestCumulativeROI AS (
+        SELECT IA.ITOKEN_ADDR AS ITOKEN_ADDR1, IA.INDEX_CUMULATIVE_ROI*100 as ROI_NEW, IA.DATE, IA.DAILY_ROI_INDEX,
+               ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.DATE DESC) AS rn
+        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_CUMULATIVE_ROI_VIEW} IA
+    ),
+    IndexRiskScore AS (
+        SELECT ITOKEN_ADDR, "RANK" AS RISK_SCORE_NEW, RANK() OVER(PARTITION BY ITOKEN_ADDR ORDER BY CREATED_AT DESC) AS rn
+        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_RISK_SCORE_PERCENTAGE}
+    )
+    SELECT DISTINCT LA.*, LI.*, LID.THRESHOLD AS INDEX_THRESHOLD, LC.ITOKEN_ADDR1, LC.ROI_NEW, LC.DATE, LC.DAILY_ROI_INDEX,
+        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.DELIST_INDEX}.ITOKEN_ADDRESS AS DELISTED_ADDRESS, IRS.RISK_SCORE_NEW
+    FROM LatestIndicesDetails LI 
+    LEFT JOIN LatestAggregates LA ON LA.ITOKEN_ADDR = LI.ITOKEN_ADDR AND LA.rn = 1 
+    LEFT JOIN LatestIndexDetails LID ON LID.ITOKEN_ADDR = LI.ITOKEN_ADDR AND LID.rn = 1 
+    LEFT JOIN LatestCumulativeROI LC ON LC.ITOKEN_ADDR1 = LI.ITOKEN_ADDR AND LC.rn = 1 
+    LEFT JOIN IndexRiskScore IRS ON IRS.ITOKEN_ADDR = LI.ITOKEN_ADDR AND IRS.rn = 1
+    LEFT JOIN ${databaseDetails.SCHEMA_NAME}.${databaseDetails.DELIST_INDEX} ON ${databaseDetails.DELIST_INDEX}.ITOKEN_ADDRESS = LI.ITOKEN_ADDR 
+    WHERE LI.rn = 1 
+    ORDER BY LI.CREATED_AT DESC;`
       const [response] = await db.query(query)
 
       const finalResponse = response.map((value) => {
@@ -189,33 +194,47 @@ export class IndicesController {
       }.${
         databaseDetails.DELIST_INDEX
       }  WHERE LOWER(ITOKEN_ADDRESS) = '${_.toLower(iTokenAddress)}' LIMIT 1`
-      const query = `WITH LatestCumulativeROI AS (
-                        SELECT 
-                            IA.ITOKEN_ADDR AS ITOKEN_ADDR, 
-                            IA.INDEX_CUMULATIVE_ROI * 100 AS ROI_NEW, 
-                            IA.DATE,
-                            ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.DATE DESC) AS rn
-                        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_CUMULATIVE_ROI_VIEW} IA
-                    )
-                    SELECT 
-                        ID.*, 
-                        IA.*,
-                        LC.ROI_NEW,
-                        LC.DATE AS ROI_DATE
-                    FROM 
-                        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_DETAILS_LATEST_SNAPSHOT_VIEW} IA
-                    LEFT JOIN 
-                        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_AGGREGATES_LATEST_SNAPSHOT_VIEW} ID 
-                    ON 
-                        ID.ITOKEN_ADDR = IA.ITOKEN_ADDR
-                    LEFT JOIN 
-                        LatestCumulativeROI LC 
-                    ON 
-                        LC.ITOKEN_ADDR = IA.ITOKEN_ADDR AND LC.rn = 1
-                    WHERE 
-                        IA.ITOKEN_ADDR = '${iTokenAddress}'
-                    ORDER BY 
-                        IA.CREATED_AT DESC;`
+      const query = `
+      WITH LatestCumulativeROI AS (
+        SELECT
+          IA.ITOKEN_ADDR AS ITOKEN_ADDR,
+          IA.INDEX_CUMULATIVE_ROI * 100 AS ROI_NEW,
+          IA.DATE,
+          ROW_NUMBER() OVER(PARTITION BY IA.ITOKEN_ADDR ORDER BY IA.DATE DESC) AS rn
+        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_CUMULATIVE_ROI_VIEW} IA
+      ),
+      LatestRiskScore AS (
+        SELECT 
+          ITOKEN_ADDR,
+          "RANK" AS RISK_SCORE_NEW,
+          RANK() OVER(PARTITION BY ITOKEN_ADDR ORDER BY CREATED_AT DESC) AS rn
+        FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDEX_RISK_SCORE_PERCENTAGE}
+      )
+      SELECT
+        ID.*,
+        IA.*,
+        LC.ROI_NEW,
+        LC.DATE AS ROI_DATE,
+        LR.RISK_SCORE_NEW
+      FROM
+        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_DETAILS_LATEST_SNAPSHOT_VIEW} IA
+      LEFT JOIN
+        ${databaseDetails.SCHEMA_NAME}.${databaseDetails.INDICES_AGGREGATES_LATEST_SNAPSHOT_VIEW} ID
+      ON
+        ID.ITOKEN_ADDR = IA.ITOKEN_ADDR
+      LEFT JOIN
+        LatestCumulativeROI LC
+      ON
+        LC.ITOKEN_ADDR = IA.ITOKEN_ADDR AND LC.rn = 1
+      LEFT JOIN
+        LatestRiskScore LR
+      ON
+        LR.ITOKEN_ADDR = IA.ITOKEN_ADDR AND LR.rn = 1
+      WHERE
+        IA.ITOKEN_ADDR = '${iTokenAddress}'
+      ORDER BY
+        IA.CREATED_AT DESC;
+      `
       const [[record], [iTokenEnabledDetails], [delistedRecords], [resp]] =
         await Promise.all([
           db.query(indiceCreateDate),

@@ -25,6 +25,7 @@ export const daoAbi = [
         name: 'proposer',
         type: 'address',
       },
+      { indexed: false, internalType: 'string', name: 'chain', type: 'string' },
       {
         indexed: false,
         internalType: 'address[]',
@@ -116,10 +117,15 @@ export const daoAbi = [
   },
   {
     inputs: [],
+    name: 'ARBSYS_ADDRESS',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
     name: 'ASTR',
-    outputs: [
-      { internalType: 'contract ASTRInterface', name: '', type: 'address' },
-    ],
+    outputs: [{ internalType: 'contract IERC20', name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -206,6 +212,7 @@ export const daoAbi = [
     inputs: [{ internalType: 'uint256', name: 'proposalId', type: 'uint256' }],
     name: 'getActions',
     outputs: [
+      { internalType: 'string', name: 'chain', type: 'string' },
       { internalType: 'address[]', name: 'targets', type: 'address[]' },
       { internalType: 'uint256[]', name: 'values', type: 'uint256[]' },
       { internalType: 'string[]', name: 'signatures', type: 'string[]' },
@@ -344,6 +351,7 @@ export const daoAbi = [
       { internalType: 'uint256', name: 'id', type: 'uint256' },
       { internalType: 'address', name: 'proposer', type: 'address' },
       { internalType: 'uint256', name: 'eta', type: 'uint256' },
+      { internalType: 'string', name: 'chain', type: 'string' },
       { internalType: 'uint256', name: 'startBlock', type: 'uint256' },
       { internalType: 'uint256', name: 'endBlock', type: 'uint256' },
       { internalType: 'uint256', name: 'forVotes', type: 'uint256' },
@@ -357,6 +365,7 @@ export const daoAbi = [
   },
   {
     inputs: [
+      { internalType: 'string', name: 'chain', type: 'string' },
       { internalType: 'address[]', name: 'targets', type: 'address[]' },
       { internalType: 'uint256[]', name: 'values', type: 'uint256[]' },
       { internalType: 'string[]', name: 'signatures', type: 'string[]' },
@@ -476,6 +485,15 @@ export const daoAbi = [
     type: 'function',
   },
   {
+    inputs: [
+      { internalType: 'uint256', name: '_votingPeriod', type: 'uint256' },
+    ],
+    name: 'updateVotingPeriod',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     name: 'votersInfo',
     outputs: [
@@ -496,7 +514,7 @@ export const daoAbi = [
     inputs: [],
     name: 'votingPeriod',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'pure',
+    stateMutability: 'view',
     type: 'function',
   },
 ] as const

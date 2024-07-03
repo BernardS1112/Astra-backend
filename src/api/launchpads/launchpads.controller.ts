@@ -3,6 +3,12 @@ import { db } from '@/App'
 import { databaseDetails } from '@/config'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
+import { ethers } from 'ethers'
+
+// ABI of the CrossChainSaleManager contract
+const abi = [
+  'function getWeightedAverageMultiplier(address account) view returns (uint256)',
+]
 
 export class LaunchpadsController {
   public static getLaunchpadList = async (req: Request, res: Response) => {
@@ -26,7 +32,7 @@ export class LaunchpadsController {
       if (filter !== 'None' && status !== 'admin') {
         if (filter === 'requested') {
           if (status === 'coming-soon')
-            FILTER_WHERE = `SALE_START_TIME > TO_TIMESTAMP(${curTime}) OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}))`
+            FILTER_WHERE = `(SALE_START_TIME > TO_TIMESTAMP(${curTime}) OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}))) AND STATUS = 'approved'`
           else FILTER_WHERE = `SALE_START_TIME > TO_TIMESTAMP(${curTime})`
         } else if (filter === 'approved') {
           FILTER_WHERE = `SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime})`
@@ -44,8 +50,10 @@ export class LaunchpadsController {
         : (WHERE = FILTER_WHERE)
       if (status !== 'admin' && status !== 'owner')
         WHERE =
+          // WHERE +
+          // ` AND ((SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'requested') OR (SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_END_TIME < TO_TIMESTAMP(${curTime}) AND STATUS = 'finished'))`
           WHERE +
-          ` AND ((SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'requested') OR (SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_END_TIME < TO_TIMESTAMP(${curTime}) AND STATUS = 'finished'))`
+          ` AND ((SALE_START_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_START_TIME < TO_TIMESTAMP(${curTime}) AND SALE_END_TIME > TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_END_TIME < TO_TIMESTAMP(${curTime}) AND STATUS = 'approved') OR (SALE_END_TIME < TO_TIMESTAMP(${curTime}) AND STATUS = 'finished'))`
       if (chain !== 'None') WHERE = WHERE + ` AND CHAIN = '${chain}'`
       if (type !== 'all') WHERE = WHERE + ` AND TOKEN_TYPE = '${type}'`
       if (!!wallet && status === 'owner')
@@ -57,7 +65,7 @@ export class LaunchpadsController {
  LIKE UPPER('%${search}%') ) `
 
       let query = `SELECT
-          *
+          *, COUNT(*) OVER() AS TOTAL
       FROM
           ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_DETAIL}
       WHERE ${WHERE}
@@ -104,7 +112,7 @@ JOIN
         ASTRA_DB_DEV.BLOCKCHAIN.CONTRIBUTOR_TEST
 ) c ON ld.LAUNCHPAD_INDEX = c.LAUNCHPAD_INDEX
 WHERE
-c.CONTRIBUTOR_ADDRESS = '${wallet}';`
+c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
 
       const [resp] = await db.query(query)
       res.status(200).json({
@@ -261,29 +269,41 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         launchpadData.owner
       }', 'requested', '${launchpadData.launchpadAddress}', '${
         launchpadData.launchpadTokenAddress
-      }', '${launchpadData.launchpadTokenName}', '${
-        launchpadData.launchpadTokenSymbol
-      }', '${launchpadData.launchpadTotalSupply}', '${
-        launchpadData.launchpadTokenDecimal
-      }', '${launchpadData.launchpadTokenPrice}', '${
-        launchpadData.launchpadTokenFDV
-      }', '${launchpadData.totalSaleAmount}', '${
-        launchpadData.saleStartTime
-      }', '${launchpadData.saleEndTime}', '${
+      }', '${escapeStringForSQL(
+        launchpadData.launchpadTokenName
+      )}', '${escapeStringForSQL(launchpadData.launchpadTokenSymbol)}', '${
+        launchpadData.launchpadTotalSupply
+      }', '${launchpadData.launchpadTokenDecimal}', '${
+        launchpadData.launchpadTokenPrice
+      }', '${launchpadData.launchpadTokenFDV}', '${
+        launchpadData.totalSaleAmount
+      }', '${launchpadData.saleStartTime}', '${launchpadData.saleEndTime}', '${
         launchpadData.minPurchaseBaseAmount
       }',  '${launchpadData.maxPurchaseBaseAmount}', '${
         launchpadData.softCap
       }', '${launchpadData.hardCap}', '${launchpadData.initialMarketCap}', '${
         launchpadData.projectValuation
-      }', '${launchpadData.projectDetail}', '${launchpadData.teamInfo}', '${
+      }', '${escapeStringForSQL(
+        launchpadData.projectDetail
+      )}', '${escapeStringForSQL(
+        launchpadData.teamInfo
+      )}', '${escapeStringForSQL(
         launchpadData.metrics
-      }', '${launchpadData.websiteUrl}', '${launchpadData.whitepaperUrl}', '${
+      )}', '${escapeStringForSQL(
+        launchpadData.websiteUrl
+      )}', '${escapeStringForSQL(
+        launchpadData.whitepaperUrl
+      )}', '${escapeStringForSQL(
         launchpadData.twitter
-      }', '${launchpadData.telegram}', '${launchpadData.discord}', '${
+      )}', '${escapeStringForSQL(
+        launchpadData.telegram
+      )}', '${escapeStringForSQL(launchpadData.discord)}', '${
         launchpadData.otherUrl
-      }', '${launchpadData.email}', '${launchpadData.investorDetail}', '${
-        launchpadData.chain
-      }', '${launchpadData.leadVC}', '${launchpadData.marketMaker}', '${
+      }', '${launchpadData.email}', '${escapeStringForSQL(
+        launchpadData.investorDetail
+      )}', '${launchpadData.chain}', '${escapeStringForSQL(
+        launchpadData.leadVC
+      )}', '${escapeStringForSQL(launchpadData.marketMaker)}', '${
         launchpadData.controlledCap
       }', '${launchpadData.daoApprovedMetrics}', '${
         launchpadData.tokenType
@@ -297,9 +317,11 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         launchpadData.approveTransaction
       }', '${escapedProjectDescriptionDetail}', '${
         launchpadData.projectImage
-      }', '${launchpadData.medium}', '${launchpadData.github}', '${
-        launchpadData.projectDeck
-      }', '${launchpadData.raised || 0}');`
+      }', '${escapeStringForSQL(launchpadData.medium)}', '${escapeStringForSQL(
+        launchpadData.github
+      )}', '${escapeStringForSQL(launchpadData.projectDeck)}', '${
+        launchpadData.raised || 0
+      }');`
 
       const [launchpadDetailRes] = await db.query(queryLaunchpadDetail)
       res.status(200).json({ status: 200, data: launchpadDetailRes, id: newId })
@@ -338,8 +360,12 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
         launchpadData.launchpadAddress
       }', LAUNCHPAD_TOKEN_ADDRESS = '${
         launchpadData.launchpadTokenAddress
-      }', LAUNCHPAD_TOKEN_NAME = '${launchpadData.launchpadTokenName}', 
-          LAUNCHPAD_TOKEN_SYMBOL = '${launchpadData.launchpadTokenSymbol}', 
+      }', LAUNCHPAD_TOKEN_NAME = '${escapeStringForSQL(
+        launchpadData.launchpadTokenName
+      )}', 
+          LAUNCHPAD_TOKEN_SYMBOL = '${escapeStringForSQL(
+            launchpadData.launchpadTokenSymbol
+          )}', 
           LAUNCHPAD_TOKEN_TOTAL_SUPPLY = '${
             launchpadData.launchpadTotalSupply
           }', 
@@ -355,20 +381,38 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
           HARD_CAP = '${launchpadData.hardCap}', 
           INITIAL_MARKET_CAP = '${launchpadData.initialMarketCap}', 
           PROJECT_VALUATION = '${launchpadData.projectValuation}', 
-          PROJECT_DETAIL = '${launchpadData.projectDetail}', 
-          TEAM_INFO = '${launchpadData.teamInfo}', 
-          METRICS = '${launchpadData.metrics}', 
-          WEBSITE_URL = '${launchpadData.websiteUrl}', 
-          WHITEPAPER_URL = '${launchpadData.whitepaperUrl}', 
-          TWITTER = '${launchpadData.twitter}', 
-          TELEGRAM = '${launchpadData.telegram}', 
-          DISCORD = '${launchpadData.discord}', 
+          PROJECT_DETAIL = '${escapeStringForSQL(
+            launchpadData.projectDetail
+          )}', 
+          ${
+            launchpadData.teamInfo
+              ? `TEAM_INFO = '${escapeStringForSQL(launchpadData.teamInfo)}',`
+              : ''
+          } 
+          ${
+            launchpadData.metrics
+              ? `METRICS = '${escapeStringForSQL(launchpadData.metrics)}',`
+              : ''
+          } 
+          WEBSITE_URL = '${escapeStringForSQL(launchpadData.websiteUrl)}', 
+          WHITEPAPER_URL = '${escapeStringForSQL(
+            launchpadData.whitepaperUrl
+          )}', 
+          TWITTER = '${escapeStringForSQL(launchpadData.twitter)}', 
+          TELEGRAM = '${escapeStringForSQL(launchpadData.telegram)}', 
+          DISCORD = '${escapeStringForSQL(launchpadData.discord)}', 
           OTHER_URL = '${launchpadData.otherUrl}', 
-          EMAIL = '${launchpadData.email}', 
-          INVESTOR_DETAIL = '${launchpadData.investorDetail}', 
+          EMAIL = '${escapeStringForSQL(launchpadData.email)}', 
+          ${
+            launchpadData.investorDetail
+              ? `INVESTOR_DETAIL = '${escapeStringForSQL(
+                  launchpadData.investorDetail
+                )}',`
+              : ''
+          } 
           CHAIN = '${launchpadData.chain}',
-          LEAD_VC = '${launchpadData.leadVC}',
-          MARKET_MAKER = '${launchpadData.marketMaker}',
+          LEAD_VC = '${escapeStringForSQL(launchpadData.leadVC)}',
+          MARKET_MAKER = '${escapeStringForSQL(launchpadData.marketMaker)}',
           CONTROLLED_CAP = '${launchpadData.controlledCap}',
           DAO_APPROVED_METRICS = '${launchpadData.daoApprovedMetrics}',
           TOKEN_TYPE = '${launchpadData.tokenType}', 
@@ -387,14 +431,18 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}';`
             escapedProjectDescriptionDetail || ''
           }',
           TEAM_DESCRIPTION = '${escapedTeamDescription || ''}',
-          SALE_ROUND_DETAIL = '${launchpadData?.saleRoundDetail || ''}',
+          SALE_ROUND_DETAIL = '${
+            escapeStringForSQL(launchpadData?.saleRoundDetail) || ''
+          }',
           PROJECT_IMAGE = '${launchpadData?.projectImage || ''}',
           LEAD_VC_IMAGE = '${launchpadData?.leadVCImage || ''}',
           MARKET_MAKER_IMAGE = '${launchpadData?.marketMakerImage || ''}',
-          MEDIUM = '${launchpadData?.medium || ''}',
-          GITHUB = '${launchpadData?.github || ''}',
+          MEDIUM = '${escapeStringForSQL(launchpadData?.medium || '')}',
+          GITHUB = '${escapeStringForSQL(launchpadData?.github || '')}',
           RAISED = '${launchpadData?.raised || 0}',
-          PROJECT_DECK = '${launchpadData?.projectDeck || ''}'
+          PROJECT_DECK = '${escapeStringForSQL(
+            launchpadData?.projectDeck || ''
+          )}'
 WHERE ID = '${launchpadId}';`
       const [updateRes] = await db.query(queryLaunchpadDetail)
       res.status(200).json({ status: 200, data: updateRes })
@@ -429,20 +477,47 @@ WHERE ID = '${launchpadId}';`
               'This address is already followed. Please try again another address',
           })
         } else {
-          const query = `MERGE INTO ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_FOLLOWING} AS target
+          const query = `MERGE INTO ${databaseDetails.SCHEMA_NAME}.${
+            databaseDetails.LAUNCHPAD_FOLLOWING
+          } AS target
         USING (SELECT '${data.address}' AS address) AS source
          ON target.USER = source.address
        WHEN MATCHED THEN
         UPDATE SET ${isFollowing} = TRUE
       WHEN NOT MATCHED THEN
-        INSERT (USER, ${isFollowing})
-        VALUES (source.address, TRUE);`
+        INSERT (USER, ${
+          isFollowing === 'IS_TELEGRAM_FOLLOWING' ? 'TELEGRAM_ID ,' : ''
+        } ${isFollowing})
+        VALUES (source.address, ${
+          isFollowing === 'IS_TELEGRAM_FOLLOWING' ? `${data.telegramId} ,` : ''
+        } TRUE);`
           const [insertRes] = await db.query(query)
           res.status(200).json({ status: 200, data: insertRes })
         }
       } else {
         res.status(400).json({ status: 400, error: 'request invalid' })
       }
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        error,
+      })
+    }
+  }
+
+  public static deleteAddress = async (req: Request, res: Response) => {
+    try {
+      res.setHeader('Access-Control-Allow-Origin', '*')
+      const userId = req.body.telegramId
+      const query = `MERGE INTO  ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_FOLLOWING} AS target
+      USING (SELECT ${userId} AS TELEGRAM_ID) AS source
+      ON target.TELEGRAM_ID = source.TELEGRAM_ID
+      WHEN MATCHED AND target.IS_TWITTER_FOLLOWING = TRUE THEN
+        UPDATE SET IS_TELEGRAM_FOLLOWING = FALSE
+      WHEN MATCHED AND target.IS_TWITTER_FOLLOWING = FALSE THEN
+        DELETE;`
+      const [insertRes] = await db.query(query)
+      res.status(200).json({ status: 200, data: insertRes })
     } catch (error) {
       res.status(500).json({
         status: 500,
@@ -542,6 +617,39 @@ WHERE ID = '${launchpadId}';`
         status: 500,
         error: error,
       })
+    }
+  }
+
+  // Function to connect to the contract and get the weighted average multiplier
+  public static getWeightedAverageMultiplier = async (
+    req: Request,
+    res: Response
+  ) => {
+    const { rpcUrl, contractAddress, userAddress } = req.body
+
+    if (!rpcUrl || !contractAddress || !userAddress) {
+      return res.status(400).json({
+        status: 400,
+        error: 'Missing required fields: rpcUrl, contractAddress, userAddress',
+      })
+    }
+
+    try {
+      // Create a provider using the RPC URL
+      const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+
+      // Create a contract instance
+      const contract = new ethers.Contract(contractAddress, abi, provider)
+
+      // Call the getWeightedAverageMultiplier function
+      const multiplier = await contract.getWeightedAverageMultiplier(
+        userAddress
+      )
+
+      res.status(200).json({ status: 200, data: multiplier.toString() })
+    } catch (error) {
+      console.error('Error in getWeightedAverageMultiplier:', error)
+      res.status(500).json({ status: 500, error: 'Internal server error' })
     }
   }
 }
