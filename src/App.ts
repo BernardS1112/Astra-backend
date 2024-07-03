@@ -38,7 +38,7 @@ class App {
     dotenv.config({
       path: path.join(
         __dirname,
-        `../.env.${process.env.NODE_ENV ? process.env.NODE_ENV : 'development'}`
+        `../.env.${process.env.PROD_ENV ? process.env.PROD_ENV : 'development'}`
       ),
     })
     this.express = express()
