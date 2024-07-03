@@ -28,7 +28,7 @@ ingress:
   tls:
   - secretName: tm-front-3-tls
     hosts:
-       - api.next.test.astradao.org
+      - api.next.test.astradao.org
 
 resources:
   requests:
