@@ -28,7 +28,7 @@ ingress:
   tls:
   - secretName: astra-mainnet
     hosts:
-       -api.astradao.org
+      - api.astradao.org
 
 resources:
   requests:

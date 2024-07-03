@@ -28,7 +28,7 @@ ingress:
   tls:
   - secretName: astra-staging
     hosts:
-       -api.staging.astradao.org
+      - api.staging.astradao.org
 
 resources:
   requests:
