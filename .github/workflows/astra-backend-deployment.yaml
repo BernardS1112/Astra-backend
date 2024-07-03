@@ -51,7 +51,7 @@ jobs:
         id: branch-names
         uses: tj-actions/branch-names@v8
 
-      - name: Write backend .env from secrets
+      - name: Write testnet .env from secrets
         id: testnet-backend_creds
         if: ${{ steps.branch-names.outputs.ref_branch == 'testnet' }}
         run: |
@@ -59,7 +59,7 @@ jobs:
         env:
           TM_ENV_DEV: ${{ secrets.ASTRA_BACKTEND_ENV }}
 
-      - name: Write backend .env from secrets
+      - name: Write staging .env from secrets
         id: staging-backend_creds
         if: ${{ steps.branch-names.outputs.ref_branch == 'staging' }}
         run: |
@@ -86,6 +86,8 @@ jobs:
         with:
           name: creds-artifact
           path: ./
+
+      - run: ls -la
     
       - name: Get branch names.
         id: branch-names
@@ -101,7 +103,7 @@ jobs:
           gcloud auth configure-docker us-central1-docker.pkg.dev
           docker build -t us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7} .
 
-      - name: Push image to testnet registry
+      - name: Push image to artifact registry
         if: (github.ref == 'refs/heads/testnet' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/mainnet') && (github.event.pull_request.merged == true || github.event_name == 'push')
         run: |
           docker push us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
