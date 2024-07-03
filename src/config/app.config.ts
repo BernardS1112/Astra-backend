@@ -1,11 +1,5 @@
-import path from 'path'
-import dotenv from 'dotenv'
-
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-})
-
 const ENVIRONMENT: string = process.env.PROD_ENV ?? 'development'
+
 export const appConfig = {
   prod: ENVIRONMENT === 'production' ? true : false,
   infuraToken:
@@ -74,3 +68,6 @@ export const databaseDetails = {
   INDEX_RISK_SCORE_PERCENTAGE: 'INDEX_RISK_SCORE_PERCENTAGE',
   LAUNCHPAD_FOLLOWING: 'LAUNCHPAD_FOLLOWING_TEST',
 }
+
+console.log('============= DATABASE NAME ON STAGING =============')
+console.log(databaseDetails.SCHEMA_NAME)

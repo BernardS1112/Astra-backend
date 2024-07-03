@@ -1,13 +1,7 @@
 import { SnowflakeQueryInterface, SnowflakeResultInterface } from '@/types'
 import { configure, createPool } from 'snowflake-sdk'
-import dotenv from 'dotenv'
-import path from 'path'
 import { databaseDetails } from '@/config'
 import { EventEmitter } from 'stream'
-
-dotenv.config({
-  path: path.join(__dirname, `../.env`),
-})
 
 export class SnowflakeServiceAbstract {
   private connectionPool: ReturnType<typeof createPool>
