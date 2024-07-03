@@ -135,7 +135,6 @@ jobs:
         run: |
           helm upgrade --install astra-backend helm/astra-backend \
           --namespace astra-${{ steps.branch-names.outputs.ref_branch }} \
-          --values ./helm/astra-backend/values.yaml \
           --values ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml \
           --set image.tag=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7} \
           --timeout 5m0s --create-namespace --debug
