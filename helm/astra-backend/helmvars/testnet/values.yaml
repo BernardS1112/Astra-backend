@@ -28,21 +28,12 @@ ingress:
   tls:
   - secretName: tm-front-3-tls
     hosts:
-       - api.next.test.astradao.org
+      - api.next.test.astradao.org
 
 resources:
   requests:
     memory: "300Mi"
     cpu: "250m"
-
-livenessProbe:
-  httpGet:
-    path: /indices
-    port: http
-readinessProbe:
-  httpGet:
-    path: /indices
-    port: http
 
 autoscaling:
   enabled: true

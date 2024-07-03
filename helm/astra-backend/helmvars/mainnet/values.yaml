@@ -28,21 +28,12 @@ ingress:
   tls:
   - secretName: astra-mainnet
     hosts:
-       -api.astradao.org
+      - api.astradao.org
 
 resources:
   requests:
     memory: "500Mi"
     cpu: "400m"
-
-livenessProbe:
-  httpGet:
-    path: /indices
-    port: http
-readinessProbe:
-  httpGet:
-    path: /indices
-    port: http
 
 autoscaling:
   enabled: true

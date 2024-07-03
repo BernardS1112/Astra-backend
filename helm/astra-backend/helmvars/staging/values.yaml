@@ -28,21 +28,12 @@ ingress:
   tls:
   - secretName: astra-staging
     hosts:
-       -api.staging.astradao.org
+      - api.staging.astradao.org
 
 resources:
   requests:
     memory: "300Mi"
     cpu: "250m"
-
-livenessProbe:
-  httpGet:
-    path: /indices
-    port: http
-readinessProbe:
-  httpGet:
-    path: /indices
-    port: http
 
 autoscaling:
   enabled: true
