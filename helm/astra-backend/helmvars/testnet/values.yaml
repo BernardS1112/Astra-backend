@@ -35,15 +35,6 @@ resources:
     memory: "300Mi"
     cpu: "250m"
 
-livenessProbe:
-  httpGet:
-    path: /indices
-    port: http
-readinessProbe:
-  httpGet:
-    path: /indices
-    port: http
-
 autoscaling:
   enabled: true
   minReplicas: 2
