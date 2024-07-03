@@ -11,6 +11,7 @@
     "prod": "export NODE_ENV=production && tsx watch src/index.ts",
     "jest": "jest --silent=false",
     "start": "export NODE_ENV=production && tsx dist/src/index.js",
+    "start-win": "set NODE_ENV=production && tsx dist/src/index.js",
     "start:build": "tsx dist/src/index.js",
     "test": "jest --silent=false",
     "lint": "eslint --fix --ext .js,.ts ./src",

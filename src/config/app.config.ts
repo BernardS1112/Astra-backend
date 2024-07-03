@@ -1,15 +1,4 @@
-import path from 'path'
-import dotenv from 'dotenv'
-
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-})
-
 const ENVIRONMENT: string = process.env.PROD_ENV ?? 'development'
-
-console.log('========= STAGING ENV ON APP CONFIG ============')
-console.log(process.env.PROD_ENV)
-console.log('- ENVIRONTMENT: ', ENVIRONMENT)
 
 export const appConfig = {
   prod: ENVIRONMENT === 'production' ? true : false,
