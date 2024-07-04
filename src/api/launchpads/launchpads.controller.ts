@@ -102,14 +102,14 @@ export class LaunchpadsController {
       const query = `SELECT
 ld.*
 FROM
-ASTRA_DB_DEV.BLOCKCHAIN.LAUNCHPAD_DETAIL_TEST ld
+${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_DETAIL} ld
 JOIN
 (
     SELECT DISTINCT
         LAUNCHPAD_INDEX,
         CONTRIBUTOR_ADDRESS
     FROM
-        ASTRA_DB_DEV.BLOCKCHAIN.CONTRIBUTOR_TEST
+    ${databaseDetails.SCHEMA_NAME}.${databaseDetails.CONTRIBUTOR}
 ) c ON ld.LAUNCHPAD_INDEX = c.LAUNCHPAD_INDEX
 WHERE
 c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
@@ -597,7 +597,7 @@ WHERE ID = '${launchpadId}';`
         /^0x([a-fA-F0-9]{40})$/.test(address)
       ) {
         const query = `SELECT USER, IS_TELEGRAM_FOLLOWING, IS_TWITTER_FOLLOWING
-          FROM ASTRA_DB_DEV.BLOCKCHAIN.LAUNCHPAD_FOLLOWING_TEST
+          FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_FOLLOWING}
           WHERE USER = '${address}';`
 
         const [resp] = await db.query(query)

@@ -20,6 +20,7 @@ import {
   usersRoutes,
   launchpadsRoutes,
   checkIPRoutes,
+  followsRoutes
 } from './api'
 import { SnowflakeServiceAbstract } from './lib/snowflake'
 // import dotenv from 'dotenv'
@@ -88,6 +89,7 @@ class App {
     this.express.use('/transactions', transactionsRoutes)
     this.express.use('/signatures', signaturesRoutes)
     this.express.use('/users', usersRoutes)
+    this.express.use('/twitter', followsRoutes)
     this.express.use('/public', express.static('public'))
     this.express.use('/launchpads', launchpadsRoutes)
   }
