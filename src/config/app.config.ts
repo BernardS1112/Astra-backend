@@ -68,6 +68,3 @@ export const databaseDetails = {
   INDEX_RISK_SCORE_PERCENTAGE: 'INDEX_RISK_SCORE_PERCENTAGE',
   LAUNCHPAD_FOLLOWING: 'LAUNCHPAD_FOLLOWING_TEST',
 }
-
-console.log('============= DATABASE NAME ON STAGING =============')
-console.log(databaseDetails.SCHEMA_NAME)
