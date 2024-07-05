@@ -292,7 +292,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
       )}', '${escapeStringForSQL(
         launchpadData.websiteUrl
       )}', '${escapeStringForSQL(
-        launchpadData.whitepaperUrl
+        launchpadData.whitepaperUrl || ''
       )}', '${escapeStringForSQL(
         launchpadData.twitter
       )}', '${escapeStringForSQL(
@@ -300,7 +300,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
       )}', '${escapeStringForSQL(launchpadData.discord)}', '${
         launchpadData.otherUrl
       }', '${launchpadData.email}', '${escapeStringForSQL(
-        launchpadData.investorDetail
+        launchpadData.investorDetail || ''
       )}', '${launchpadData.chain}', '${escapeStringForSQL(
         launchpadData.leadVC
       )}', '${escapeStringForSQL(launchpadData.marketMaker)}', '${
@@ -318,8 +318,8 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
       }', '${escapedProjectDescriptionDetail}', '${
         launchpadData.projectImage
       }', '${escapeStringForSQL(launchpadData.medium)}', '${escapeStringForSQL(
-        launchpadData.github
-      )}', '${escapeStringForSQL(launchpadData.projectDeck)}', '${
+        launchpadData.github || ''
+      )}', '${escapeStringForSQL(launchpadData.projectDeck || '')}', '${
         launchpadData.raised || 0
       }');`
 
@@ -396,7 +396,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
           } 
           WEBSITE_URL = '${escapeStringForSQL(launchpadData.websiteUrl)}', 
           WHITEPAPER_URL = '${escapeStringForSQL(
-            launchpadData.whitepaperUrl
+            launchpadData.whitepaperUrl || ''
           )}', 
           TWITTER = '${escapeStringForSQL(launchpadData.twitter)}', 
           TELEGRAM = '${escapeStringForSQL(launchpadData.telegram)}', 
@@ -406,7 +406,7 @@ c.CONTRIBUTOR_ADDRESS = '${wallet}' AND ld.STATUS != 'requested';`
           ${
             launchpadData.investorDetail
               ? `INVESTOR_DETAIL = '${escapeStringForSQL(
-                  launchpadData.investorDetail
+                  launchpadData.investorDetail || ''
                 )}',`
               : ''
           } 
