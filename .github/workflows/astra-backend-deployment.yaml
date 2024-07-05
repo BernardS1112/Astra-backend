@@ -67,6 +67,14 @@ jobs:
         env:
           ASTRA_ENV: ${{ secrets.STAGING_ENV }}
 
+      - name: Write mainnet .env from secrets
+        id: mainnet-backend_creds
+        if: ${{ steps.branch-names.outputs.ref_branch == 'mainnet' }}
+        run: |
+          echo "${{ secrets.MAINNET_ENV }}" > .env
+        env:
+          ASTRA_ENV: ${{ secrets.MAINNET_ENV }}
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
