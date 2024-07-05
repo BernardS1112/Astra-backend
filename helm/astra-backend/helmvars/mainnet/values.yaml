@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: us-central1-docker.pkg.dev/tmgalaxy/tokenmetrics-prod/astra-backend
+  repository: us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend
   pullPolicy: IfNotPresent
   tag: ""
 
