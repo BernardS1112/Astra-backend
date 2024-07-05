@@ -9,6 +9,7 @@ import { ethers } from 'ethers'
 const abi = [
   'function getWeightedAverageMultiplier(address account) view returns (uint256)',
 ]
+const launchpadAbi = ['function totalAmountRaised() view returns (uint256)']
 
 export class LaunchpadsController {
   public static getLaunchpadList = async (req: Request, res: Response) => {
@@ -649,6 +650,38 @@ WHERE ID = '${launchpadId}';`
       res.status(200).json({ status: 200, data: multiplier.toString() })
     } catch (error) {
       console.error('Error in getWeightedAverageMultiplier:', error)
+      res.status(500).json({ status: 500, error: 'Internal server error' })
+    }
+  }
+
+  // get total amoutn raised
+  public static getTotalAmountRaised = async (req: Request, res: Response) => {
+    const { rpcUrl, launchpadAddress } = req.body
+
+    if (!rpcUrl || !launchpadAddress) {
+      return res.status(400).json({
+        status: 400,
+        error: 'Missing required fields: rpcUrl, contractAddress',
+      })
+    }
+
+    try {
+      // Create a provider using the RPC URL
+      const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+
+      // Create a contract instance
+      const contract = new ethers.Contract(
+        launchpadAddress,
+        launchpadAbi,
+        provider
+      )
+
+      // Call the getWeightedAverageMultiplier function
+      const totalAmountRaised = await contract.totalAmountRaised()
+
+      res.status(200).json({ status: 200, data: totalAmountRaised.toString() })
+    } catch (error) {
+      console.error('Error in getTotalAmountRaised:', error)
       res.status(500).json({ status: 500, error: 'Internal server error' })
     }
   }

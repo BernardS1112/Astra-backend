@@ -36,5 +36,9 @@ launchpadsRoutes.post(
   '/getWeightedAverageMultiplier',
   LaunchpadsController.getWeightedAverageMultiplier
 )
+launchpadsRoutes.post(
+  '/getTotalAmountRaised',
+  LaunchpadsController.getTotalAmountRaised
+)
 
 export { launchpadsRoutes }
