@@ -1,11 +1,5 @@
 import app from './App'
 import { Request, Response, NextFunction } from 'express'
-import dotenv from 'dotenv'
-import path from 'path'
-
-dotenv.config({
-  path: path.join(__dirname, `../.env`),
-})
 
 const port = Number(process?.env.PORT || 3000)
 
