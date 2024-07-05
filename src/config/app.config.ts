@@ -1,11 +1,5 @@
-import path from 'path'
-import dotenv from 'dotenv'
-
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-})
-
 const ENVIRONMENT: string = process.env.PROD_ENV ?? 'development'
+
 export const appConfig = {
   prod: ENVIRONMENT === 'production' ? true : false,
   infuraToken:
