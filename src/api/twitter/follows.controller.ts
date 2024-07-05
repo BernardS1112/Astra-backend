@@ -11,6 +11,9 @@ const defaultData = { codeVerifier: [], state: [] }
 let db: any
 ;(async () => {
   db = await JSONFilePreset('db.json', defaultData)
+  db.data.state = []
+  db.data.codeVerifier = []
+  await db.write()
 })()
 
 const twitterClient = new TwitterApi({
@@ -50,19 +53,21 @@ export class FollowsController {
     try {
       const { state, code } = req.query
       if (!state || !code) return res.json({ err: 'invalid' })
-      const codeVerifier = db.data.codeVerifier.pop()
-      const savedState = db.data.state.pop()
-      if (state !== savedState) {
+      // const codeVerifier = db.data.codeVerifier.pop()
+      // const savedState = db.data.state.pop()
+      // if (state !== savedState) {
+      if (!db.data.state.includes(state)) {
         return res.status(400).send('Invalid state')
       }
+      const codeVerifier = db.data.codeVerifier[db.data.state.indexOf(state)]
       const { client: loggedClient } = await twitterClient.loginWithOAuth2({
         code: code as string,
         codeVerifier: codeVerifier as string,
         redirectUri: callbackURL,
       })
 
-      db.data.state = []
-      db.data.codeVerifier = []
+      // db.data.state = []
+      // db.data.codeVerifier = []
       await db.write()
       const { data } = await loggedClient.v2.me()
       const followResult = await loggedClient.v2.follow(
