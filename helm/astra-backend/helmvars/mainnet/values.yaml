@@ -32,8 +32,8 @@ ingress:
 
 resources:
   requests:
-    memory: "500Mi"
-    cpu: "400m"
+    memory: "300Mi"
+    cpu: "200m"
 
 autoscaling:
   enabled: true
