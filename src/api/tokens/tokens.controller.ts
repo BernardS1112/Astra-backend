@@ -9,7 +9,6 @@ import { TToken } from '@/types'
 import { testTokens } from '@/constants'
 import { chainConfig } from '@/config/chain.config'
 import { readContract } from '@wagmi/core'
-import { gql } from 'graphql-request'
 
 export class TokensController {
   constructor() {}
