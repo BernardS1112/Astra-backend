@@ -9,7 +9,6 @@ import { TToken } from '@/types'
 import { testTokens } from '@/constants'
 import { chainConfig } from '@/config/chain.config'
 import { readContract } from '@wagmi/core'
-import { gql } from 'graphql-request'
 
 export class TokensController {
   constructor() {}
@@ -283,38 +282,48 @@ export class TokensController {
 
   public static uniswapTokensList = async (_req: Request, res: Response) => {
     try {
-      res.setHeader('Access-Control-Allow-Origin', '*')
-      const query = gql`
-        {
-          tokens(
-            orderBy: _totalValueLockedUSD
-            where: { _totalValueLockedUSD_gte: "50000" }
-            orderDirection: desc
-            first: 50
-          ) {
-            id
-            name
-            decimals
-            symbol
-            _totalSupply
-            _totalValueLockedUSD
-            lastPriceUSD
-          }
-        }
-      `
-      const results = await axios.post(
-        'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-arbitrum',
-        {
-          query,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      const apiKey = process.env.COINGECKO_API_KEY
+      if (!apiKey) {
+        return res.status(500).send({ err: 'CoinGecko API key not set' })
+      }
 
-      return res.send({ data: results.data.data.tokens ?? [], status: 200 })
+      const result = await axios.get(
+        'https://api.coingecko.com/api/v3/exchanges/uniswap_v3_arbitrum'
+      )
+      const tokenList: any[] = []
+
+      result.data.tickers.forEach((item: any) => {
+        if (item.converted_volume.usd >= 50000) {
+          tokenList.push({
+            token: item.base,
+            _totalValueLockedUSD: item.converted_volume.usd,
+          })
+          tokenList.push({
+            token: item.target,
+            _totalValueLockedUSD: item.converted_volume.usd,
+          })
+        }
+      })
+
+      const uniqueTokens = [
+        ...new Map(tokenList.map((item) => [item.token, item])).values(),
+      ]
+
+      const tokenDetailsPromises = uniqueTokens.map(({ token }) =>
+        fetchTokenDetailsWithRetries(token, apiKey)
+      )
+      const tokenDetails = await Promise.all(tokenDetailsPromises)
+
+      tokenDetails.forEach((details, index) => {
+        if (details) {
+          uniqueTokens[index] = { ...uniqueTokens[index], ...details }
+        }
+      })
+
+      return res.send({
+        data: uniqueTokens.filter((token) => token.id),
+        status: 200,
+      })
     } catch (err) {
       res.status(500).send({ err })
     }
@@ -380,4 +389,34 @@ export class TokensController {
       res.status(500).send({ err })
     }
   }
+}
+
+const fetchTokenDetails = async (tokenAddress: string, apiKey: string) => {
+  try {
+    const response = await axios.get(
+      `https://pro-api.coingecko.com/api/v3/coins/arbitrum-one/contract/${tokenAddress}`,
+      {
+        headers: {
+          'x-cg-pro-api-key': apiKey,
+        },
+      }
+    )
+    const { id, symbol, name, image } = response.data
+    return { id, name, symbol, img: image.thumb }
+  } catch (error) {
+    console.error(`Error fetching details for ${tokenAddress}:`, error)
+    return null
+  }
+}
+
+const fetchTokenDetailsWithRetries = async (
+  tokenAddress: string,
+  apiKey: string,
+  retries = 3
+) => {
+  for (let i = 0; i < retries; i++) {
+    const result = await fetchTokenDetails(tokenAddress, apiKey)
+    if (result) return result
+  }
+  return null
 }
