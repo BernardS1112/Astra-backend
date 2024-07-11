@@ -42,15 +42,6 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
 
-volumeMounts:
-  - name: data-volume
-    mountPath: /data
-
-volumes:
-  - name: data-volume
-    persistentVolumeClaim:
-      claimName: data-pvc
-
 pvc:
   accessModes:
     - ReadWriteOnce
