@@ -114,10 +114,8 @@ export class ProposalsController {
           )
         } catch (e) {
           try {
-            try {
-              parsedDescription = JSON.parse(element.DESCRIPTION)
-            } catch (e) {}
-          } catch {}
+            parsedDescription = JSON.parse(element.DESCRIPTION)
+          } catch (e) {}
         }
         element.title = parsedDescription?.title
         element.description = parsedDescription?.description
@@ -140,7 +138,7 @@ export class ProposalsController {
       // Website you wish to allow to connect
       res.setHeader('Access-Control-Allow-Origin', '*')
       const proposalId = req.params['proposalId']
-      const query = `select A.*, B.* from ${databaseDetails.SCHEMA_NAME}.PROPOSAL_DETAILS_LATEST_VIEW A RIGHT JOIN ${databaseDetails.SCHEMA_NAME}."PROPOSAL_CREATED_VIEW" B ON A.ID = B.ID where A.ID=${proposalId}`
+      const query = `select A.*, B.* from ${databaseDetails.SCHEMA_NAME}.${databaseDetails.PROPOSAL_DETAILS_LATEST_VIEW} A RIGHT JOIN ${databaseDetails.SCHEMA_NAME}."PROPOSAL_CREATED_VIEW" B ON A.ID = B.ID where A.ID=${proposalId}`
       const [resp] = await db.query(query)
       res.send({
         status: 200,
@@ -323,7 +321,6 @@ export class ProposalsController {
 
   public static getAPYPerc = async (_req: Request, res: Response) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
-    // '../../../public'
     const jsonData = JSON.parse(
       fs.readFileSync(
         path.resolve(

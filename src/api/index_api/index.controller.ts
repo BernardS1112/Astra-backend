@@ -49,10 +49,18 @@ export class IndexController {
 
   public static coinGeckoPrice = async (req: Request, res: Response) => {
     try {
+      const apiKey = process.env.COINGECKO_API_KEY
+      if (!apiKey) {
+        return res.status(500).json({ err: 'CoinGecko API key not set' })
+      }
+
       const response = await axios.get(
         'https://pro-api.coingecko.com/api/v3/simple/price',
         {
           params: req.query,
+          headers: {
+            'x-cg-pro-api-key': apiKey,
+          },
         }
       )
       res.send(response.data)

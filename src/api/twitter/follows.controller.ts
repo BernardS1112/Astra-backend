@@ -1,12 +1,7 @@
 import { Request, Response } from 'express'
 import { JSONFilePreset } from 'lowdb/node'
 import { TwitterApi } from 'twitter-api-v2'
-import dotenv from 'dotenv'
-import path from 'path'
 
-dotenv.config({
-  path: path.join(__dirname, `../../../.env`),
-})
 const defaultData = { codeVerifier: [], state: [] }
 let db: any
 ;(async () => {
@@ -17,19 +12,15 @@ let db: any
 })()
 
 const twitterClient = new TwitterApi({
-  clientId: process.env.CLIENT_ID as string,
-  clientSecret: process.env.CLIENT_SECRET as string,
+  clientId: process.env.TWITTER_CLIENT_ID as string,
+  clientSecret: process.env.TWITTER_CLIENT_SECRET as string,
 })
 
-// const twitterClientWithBeareToken = new TwitterApi(
-//   'AAAAAAAAAAAAAAAAAAAAAAgWuwEAAAAAOT4nW8gB9Kd8%2FdniG1FwpjKLruM%3DFf1jUwXXZR4pLb6DyZqOlq79kbymgNP9Bg0cNbh4zbALVK8clF'
-// )
-// const readOnlyClient = twitterClientWithBeareToken.readOnly
-
-const callbackURL = process.env.CALLBACK_URL as string
+const callbackURL = process.env.TWITTER_CALLBACK_URL as string
 
 export class FollowsController {
   constructor() {}
+
   public static index = async (_req: Request, res: Response) => {
     return res.json({ hello: 'world' })
   }
@@ -58,12 +49,10 @@ export class FollowsController {
     try {
       const { state, code } = req.query
       if (!state || !code) return res.json({ err: 'invalid' })
-      // const codeVerifier = db.data.codeVerifier.pop()
-      // const savedState = db.data.state.pop()
-      // if (state !== savedState) {
       if (!db.data.state.includes(state)) {
         return res.status(400).send('Invalid state')
       }
+
       const codeVerifier = db.data.codeVerifier[db.data.state.indexOf(state)]
       const { client: loggedClient } = await twitterClient.loginWithOAuth2({
         code: code as string,
@@ -71,27 +60,12 @@ export class FollowsController {
         redirectUri: callbackURL,
       })
 
-      // db.data.state = []
-      // db.data.codeVerifier = []
       await db.write()
       const { data } = await loggedClient.v2.me()
       const followResult = await loggedClient.v2.follow(
         data.id,
-        '1445297898317570048'
+        process.env.TWITTER_ASTRADAO_APP_ID as string
       )
-      console.log({ data, followResult })
-
-      // // Fetch followers of the user with ID '1445297898317570048'
-      // const followers = await loggedClient.v2.followers('1445297898317570048')
-      // console.log('============== followers of astradao_org ===============')
-      // console.log({ followers })
-
-      // // Check if the user follows the specific account
-      // const following = await loggedClient.v2.following(data.id)
-      // const isFollowing = following.data.find(
-      //   (user: any) => user.id === '1445297898317570048'
-      // )
-      // console.log(`${data.username} is following the account: ${isFollowing}`)
 
       return res.redirect(
         `${process.env.FRONTEND_URL}/apicallback_?i=${
@@ -100,7 +74,7 @@ export class FollowsController {
       ) //EDIT THIS URL TO SEND BACK TO FRONTEND
     } catch (e) {
       console.log(e)
-      return res.json({ err: 'fail' })
+      return res.json({ err: e })
     }
   }
 }
