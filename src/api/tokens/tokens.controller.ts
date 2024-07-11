@@ -97,7 +97,7 @@ export class TokensController {
   public static updateAstraPrice = async () => {
     try {
       const astraTokenDetails = await axios.get(
-        `https://pro-api.coingecko.com/api/v3/simple/token_price/arbitrum-one?contract_addresses=${chainConfig.astraContractAddress}&vs_currencies=usd&x_cg_pro_api_key=CG-y3FFBqZQQvMwVqtf7p8T5zf7`
+        `https://pro-api.coingecko.com/api/v3/simple/token_price/arbitrum-one?contract_addresses=${chainConfig.astraContractAddress}&vs_currencies=usd&x_cg_pro_api_key=${process.env.COINGECKO_API_KEY}`
       )
       let tokenPrice: string =
         astraTokenDetails && astraTokenDetails.data
@@ -326,6 +326,40 @@ export class TokensController {
       })
     } catch (err) {
       res.status(500).send({ err })
+    }
+  }
+
+  public static uniswapTokenDetail = async (req: Request, res: Response) => {
+    try {
+      const apiKey = process.env.COINGECKO_API_KEY
+      if (!apiKey) {
+        return res.status(500).send({ err: 'CoinGecko API key not set' })
+      }
+
+      const { tokenAddress } = req.query
+
+      const response = await axios.get(
+        `https://pro-api.coingecko.com/api/v3/coins/arbitrum-one/contract/${tokenAddress}`,
+        {
+          headers: {
+            'x-cg-pro-api-key': apiKey,
+          },
+        }
+      )
+      const { id, symbol, name, image, market_data } = response.data
+      res.status(200).json({
+        data: {
+          id,
+          name,
+          symbol,
+          img: image.thumb,
+          token: tokenAddress,
+          _totalValueLockedUSD: market_data.total_value_locked.usd,
+        },
+      })
+    } catch (error) {
+      console.error(error)
+      return null
     }
   }
 

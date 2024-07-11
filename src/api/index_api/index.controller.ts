@@ -32,8 +32,7 @@ export class IndexController {
         } else {
           delistDate = moment(delistDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
           const query = `INSERT INTO ${databaseDetails.SCHEMA_NAME}.${databaseDetails.DELIST_INDEX}("INDEX_ID", "ITOKEN_ADDRESS", "DELIST_DATE") VALUES ('${indexId}', '${iTokenAddress}', '${delistDate}')`
-          const [resp] = await db.query(query)
-          console.log('resp: ', resp)
+          await db.query(query)
           res.send({
             status: 200,
             message: 'Index has been shutdown successfully.',
@@ -49,10 +48,18 @@ export class IndexController {
 
   public static coinGeckoPrice = async (req: Request, res: Response) => {
     try {
+      const apiKey = process.env.COINGECKO_API_KEY
+      if (!apiKey) {
+        return res.status(500).json({ err: 'CoinGecko API key not set' })
+      }
+
       const response = await axios.get(
         'https://pro-api.coingecko.com/api/v3/simple/price',
         {
           params: req.query,
+          headers: {
+            'x-cg-pro-api-key': apiKey,
+          },
         }
       )
       res.send(response.data)
