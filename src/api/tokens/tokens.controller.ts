@@ -329,6 +329,40 @@ export class TokensController {
     }
   }
 
+  public static uniswapTokenDetail = async (req: Request, res: Response) => {
+    try {
+      const apiKey = process.env.COINGECKO_API_KEY
+      if (!apiKey) {
+        return res.status(500).send({ err: 'CoinGecko API key not set' })
+      }
+
+      const { tokenAddress } = req.query
+
+      const response = await axios.get(
+        `https://pro-api.coingecko.com/api/v3/coins/arbitrum-one/contract/${tokenAddress}`,
+        {
+          headers: {
+            'x-cg-pro-api-key': apiKey,
+          },
+        }
+      )
+      const { id, symbol, name, image, market_data } = response.data
+      res.status(200).json({
+        data: {
+          id,
+          name,
+          symbol,
+          img: image.thumb,
+          token: tokenAddress,
+          _totalValueLockedUSD: market_data.total_value_locked.usd,
+        },
+      })
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  }
+
   public static uniswapTokenListBk = async (_req: Request, res: Response) => {
     try {
       res.setHeader('Access-Control-Allow-Origin', '*')

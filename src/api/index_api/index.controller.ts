@@ -32,8 +32,7 @@ export class IndexController {
         } else {
           delistDate = moment(delistDate, 'DD-MM-YYYY').format('YYYY-MM-DD')
           const query = `INSERT INTO ${databaseDetails.SCHEMA_NAME}.${databaseDetails.DELIST_INDEX}("INDEX_ID", "ITOKEN_ADDRESS", "DELIST_DATE") VALUES ('${indexId}', '${iTokenAddress}', '${delistDate}')`
-          const [resp] = await db.query(query)
-          console.log('resp: ', resp)
+          await db.query(query)
           res.send({
             status: 200,
             message: 'Index has been shutdown successfully.',
