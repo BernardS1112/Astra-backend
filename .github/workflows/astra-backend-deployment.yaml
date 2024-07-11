@@ -143,6 +143,8 @@ jobs:
       - name: Deploy testnet to cluster
         if: (github.ref == 'refs/heads/testnet' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/mainnet') && (github.event.pull_request.merged == true || github.event_name == 'push')
         run: |
+          BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
+          SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
           helm upgrade --install astra-backend helm/astra-backend \
           --namespace astra-${{ steps.branch-names.outputs.ref_branch }} \
           --values ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml \
