@@ -53,7 +53,7 @@ jobs:
 
       - name: Write testnet .env from secrets
         id: testnet-backend_creds
-        if: ${{ steps.branch-names.outputs.ref_branch == 'testnet' }}
+        if: ${{ steps.branch-names.outputs.ref_branch != 'mainnet' || 'staging' }}
         run: |
           echo "${{ secrets.ASTRA_BACKTEND_ENV }}" > .env
         env:
