@@ -97,7 +97,7 @@ export class TokensController {
   public static updateAstraPrice = async () => {
     try {
       const astraTokenDetails = await axios.get(
-        `https://pro-api.coingecko.com/api/v3/simple/token_price/arbitrum-one?contract_addresses=${chainConfig.astraContractAddress}&vs_currencies=usd&x_cg_pro_api_key=CG-y3FFBqZQQvMwVqtf7p8T5zf7`
+        `https://pro-api.coingecko.com/api/v3/simple/token_price/arbitrum-one?contract_addresses=${chainConfig.astraContractAddress}&vs_currencies=usd&x_cg_pro_api_key=${process.env.COINGECKO_API_KEY}`
       )
       let tokenPrice: string =
         astraTokenDetails && astraTokenDetails.data
