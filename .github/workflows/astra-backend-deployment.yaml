@@ -107,12 +107,16 @@ jobs:
       - name: Build testnet docker image
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
-          docker build -t us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7} .
+          BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
+          SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
+          docker build -t us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:$SAFE_BRANCH_NAME .
 
       - name: Push image to artifact registry
         if: (github.ref == 'refs/heads/testnet' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/mainnet') && (github.event.pull_request.merged == true || github.event_name == 'push')
         run: |
-          docker push us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
+          BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
+          SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
+          docker push us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:$SAFE_BRANCH_NAME
     
   release-to-k8s:
     name: "Release to k8s"
@@ -142,7 +146,7 @@ jobs:
           helm upgrade --install astra-backend helm/astra-backend \
           --namespace astra-${{ steps.branch-names.outputs.ref_branch }} \
           --values ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml \
-          --set image.tag=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7} \
+          --set image.tag=$SAFE_BRANCH_NAME \
           --timeout 5m0s --create-namespace --debug
 
           
