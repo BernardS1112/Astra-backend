@@ -82,12 +82,12 @@ export class FollowsController {
       console.log({ data, followResult })
 
       // // Fetch followers of the user with ID '1445297898317570048'
-      // const followers = await readOnlyClient.v2.followers('1445297898317570048')
+      // const followers = await loggedClient.v2.followers('1445297898317570048')
       // console.log('============== followers of astradao_org ===============')
       // console.log({ followers })
 
       // // Check if the user follows the specific account
-      // const following = await readOnlyClient.v2.following(data.id)
+      // const following = await loggedClient.v2.following(data.id)
       // const isFollowing = following.data.find(
       //   (user: any) => user.id === '1445297898317570048'
       // )
