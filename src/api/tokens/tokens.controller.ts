@@ -338,29 +338,23 @@ export class TokensController {
 
       const { tokenAddress } = req.params
 
-      const response = await axios.get(
-        `https://pro-api.coingecko.com/api/v3/coins/arbitrum-one/contract/${tokenAddress}`,
-        {
-          headers: {
-            'x-cg-pro-api-key': apiKey,
+      const detail = await fetchTokenDetails(tokenAddress, apiKey)
+      if (detail)
+        res.status(200).json({
+          data: {
+            id: detail.id,
+            name: detail.name,
+            symbol: detail.symbol,
+            img: detail.img,
+            token: detail.token,
+            lastPriceUSD: detail.lastPriceUSD,
+            _totalValueLockedUSD: detail._totalValueLockedUSD,
           },
-        }
-      )
-      const { id, symbol, name, image, market_data } = response.data
-      res.status(200).json({
-        data: {
-          id,
-          name,
-          symbol,
-          img: image.thumb,
-          token: tokenAddress,
-          lastPriceUSD: market_data.current_price.usd,
-          _totalValueLockedUSD: market_data.total_value_locked.usd,
-        },
-      })
+        })
+      else res.status(200).json({ data: null })
     } catch (error) {
       console.error(error)
-      return null
+      return res.status(500).send({ err: error })
     }
   }
 
@@ -436,8 +430,16 @@ const fetchTokenDetails = async (tokenAddress: string, apiKey: string) => {
         },
       }
     )
-    const { id, symbol, name, image } = response.data
-    return { id, name, symbol, img: image.thumb }
+    const { id, symbol, name, image, market_data } = response.data
+    return {
+      id,
+      name,
+      symbol,
+      img: image.thumb,
+      token: tokenAddress,
+      lastPriceUSD: market_data.current_price.usd,
+      _totalValueLockedUSD: market_data.total_value_locked.usd,
+    }
   } catch (error) {
     console.error(`Error fetching details for ${tokenAddress}:`, error)
     return null
@@ -447,7 +449,7 @@ const fetchTokenDetails = async (tokenAddress: string, apiKey: string) => {
 const fetchTokenDetailsWithRetries = async (
   tokenAddress: string,
   apiKey: string,
-  retries = 3
+  retries = 2
 ) => {
   for (let i = 0; i < retries; i++) {
     const result = await fetchTokenDetails(tokenAddress, apiKey)
