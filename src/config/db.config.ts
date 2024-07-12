@@ -21,7 +21,7 @@ export const dbConfig = {
 
 export enum Schema {
   TOKENMETRICS = 'TOKENMETRICS',
-  BLOCKCHAIN = 'ASTRA_DB_DEV_BLOCKCHAIN',
+  BLOCKCHAIN = 'BLOCKCHAIN',
 }
 
 export enum Database {
