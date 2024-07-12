@@ -282,6 +282,7 @@ export class TokensController {
 
   public static uniswapTokensList = async (_req: Request, res: Response) => {
     try {
+      res.setHeader('Access-Control-Allow-Origin', '*')
       const apiKey = process.env.COINGECKO_API_KEY
       if (!apiKey) {
         return res.status(500).send({ err: 'CoinGecko API key not set' })
@@ -316,7 +317,7 @@ export class TokensController {
 
       tokenDetails.forEach((details, index) => {
         if (details) {
-          uniqueTokens[index] = { ...uniqueTokens[index], ...details }
+          uniqueTokens[index] = { ...details, ...uniqueTokens[index] }
         }
       })
 
@@ -331,6 +332,7 @@ export class TokensController {
 
   public static uniswapTokenDetail = async (req: Request, res: Response) => {
     try {
+      res.setHeader('Access-Control-Allow-Origin', '*')
       const apiKey = process.env.COINGECKO_API_KEY
       if (!apiKey) {
         return res.status(500).send({ err: 'CoinGecko API key not set' })
@@ -438,7 +440,9 @@ const fetchTokenDetails = async (tokenAddress: string, apiKey: string) => {
       img: image.thumb,
       token: tokenAddress,
       lastPriceUSD: market_data.current_price.usd,
-      _totalValueLockedUSD: market_data.total_value_locked.usd,
+      _totalValueLockedUSD: market_data.total_value_locked
+        ? market_data.total_value_locked.usd
+        : 0,
     }
   } catch (error) {
     console.error(`Error fetching details for ${tokenAddress}:`, error)
