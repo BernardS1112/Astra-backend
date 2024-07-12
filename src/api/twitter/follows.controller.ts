@@ -43,6 +43,11 @@ export class FollowsController {
       if (!state || !code) return res.json({ err: 'invalid' })
 
       const session = sessionStore[state as string]
+      console.log('============ state from callback ==============')
+      console.log(state)
+      console.log('============ session variable ==============')
+      console.log(session)
+      console.log('state: ', session.state)
       if (!session || session.state !== state) {
         return res.status(400).send('Invalid state')
       }
