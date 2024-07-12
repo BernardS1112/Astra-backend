@@ -48,6 +48,7 @@ export class IndexController {
 
   public static coinGeckoPrice = async (req: Request, res: Response) => {
     try {
+      res.setHeader('Access-Control-Allow-Origin', '*')
       const apiKey = process.env.COINGECKO_API_KEY
       if (!apiKey) {
         return res.status(500).json({ err: 'CoinGecko API key not set' })
@@ -62,6 +63,7 @@ export class IndexController {
           },
         }
       )
+
       res.send(response.data)
     } catch (error) {
       const errData =
