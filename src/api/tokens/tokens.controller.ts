@@ -354,6 +354,7 @@ export class TokensController {
           symbol,
           img: image.thumb,
           token: tokenAddress,
+          lastPriceUSD: market_data.current_price.usd,
           _totalValueLockedUSD: market_data.total_value_locked.usd,
         },
       })
