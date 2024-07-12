@@ -1,15 +1,9 @@
 import { Request, Response } from 'express'
-import { JSONFilePreset } from 'lowdb/node'
 import { TwitterApi } from 'twitter-api-v2'
 
-const defaultData = { codeVerifier: [], state: [] }
-let db: any
-;(async () => {
-  db = await JSONFilePreset('db.json', defaultData)
-  db.data.state = []
-  db.data.codeVerifier = []
-  await db.write()
-})()
+const sessionStore: {
+  [key: string]: { codeVerifier: string; state: string }
+} = {}
 
 const twitterClient = new TwitterApi({
   clientId: process.env.TWITTER_CLIENT_ID as string,
@@ -40,27 +34,26 @@ export class FollowsController {
         ],
       }
     )
-    db.data.codeVerifier.push(codeVerifier)
-    db.data.state.push(state)
-    await db.write()
+    sessionStore[state] = { codeVerifier, state }
     return res.json({ url })
   }
   public static callback = async (req: Request, res: Response) => {
     try {
       const { state, code } = req.query
       if (!state || !code) return res.json({ err: 'invalid' })
-      if (!db.data.state.includes(state)) {
+
+      const session = sessionStore[state as string]
+      if (!session || session.state !== state) {
         return res.status(400).send('Invalid state')
       }
 
-      const codeVerifier = db.data.codeVerifier[db.data.state.indexOf(state)]
+      const { codeVerifier } = session
       const { client: loggedClient } = await twitterClient.loginWithOAuth2({
         code: code as string,
         codeVerifier: codeVerifier as string,
         redirectUri: callbackURL,
       })
 
-      await db.write()
       const { data } = await loggedClient.v2.me()
       const followResult = await loggedClient.v2.follow(
         data.id,
