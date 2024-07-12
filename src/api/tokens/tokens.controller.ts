@@ -336,7 +336,7 @@ export class TokensController {
         return res.status(500).send({ err: 'CoinGecko API key not set' })
       }
 
-      const { tokenAddress } = req.query
+      const { tokenAddress } = req.params
 
       const response = await axios.get(
         `https://pro-api.coingecko.com/api/v3/coins/arbitrum-one/contract/${tokenAddress}`,
