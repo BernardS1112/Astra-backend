@@ -20,11 +20,9 @@ import {
   usersRoutes,
   launchpadsRoutes,
   checkIPRoutes,
-  followsRoutes
+  followsRoutes,
 } from './api'
 import { SnowflakeServiceAbstract } from './lib/snowflake'
-// import dotenv from 'dotenv'
-// import path from 'path'
 import { configureChains, createConfig } from '@wagmi/core'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { publicProvider } from '@wagmi/core/providers/public'
