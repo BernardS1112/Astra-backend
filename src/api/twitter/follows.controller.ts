@@ -16,7 +16,7 @@ export class FollowsController {
   constructor() {}
 
   public static index = async (_req: Request, res: Response) => {
-    return res.json({ hello: 'world' })
+    return res.json({ hello: 'twitter index endpoint' })
   }
   public static loginTwitter = async (_req: Request, res: Response) => {
     const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
@@ -40,7 +40,7 @@ export class FollowsController {
   public static callback = async (req: Request, res: Response) => {
     try {
       const { state, code } = req.query
-      if (!state || !code) return res.json({ err: 'invalid' })
+      if (!state || !code) return res.status(404).json({ err: 'invalid' })
 
       const session = sessionStore[state as string]
       console.log('============ state from callback ==============')
@@ -72,7 +72,7 @@ export class FollowsController {
       ) //EDIT THIS URL TO SEND BACK TO FRONTEND
     } catch (e) {
       console.log(e)
-      return res.json({ err: e })
+      return res.status(500).json({ err: e })
     }
   }
 }
