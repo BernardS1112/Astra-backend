@@ -39,15 +39,13 @@ export class FollowsController {
   }
   public static callback = async (req: Request, res: Response) => {
     try {
-      const { state, code } = req.query
+      const { state, code } = req.query as {
+        state: string
+        code: string
+      }
       if (!state || !code) return res.status(404).json({ err: 'invalid' })
 
       const session = sessionStore[state as string]
-      console.log('============ state from callback ==============')
-      console.log(state)
-      console.log('============ session variable ==============')
-      console.log(session)
-      console.log('state: ', session.state)
       if (!session || session.state !== state) {
         return res.status(400).send('Invalid state')
       }
