@@ -72,7 +72,7 @@ export class FollowsController {
       ) //EDIT THIS URL TO SEND BACK TO FRONTEND
     } catch (e) {
       console.log(e)
-      return res.status(500).json({ err: e })
+      return res.status(500).json({ err: 'error while call back: ', e })
     }
   }
 }
