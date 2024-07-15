@@ -1,8 +1,13 @@
 import { Request, Response } from 'express'
 import { TwitterApi } from 'twitter-api-v2'
 
+interface SessionData {
+  codeVerifier: string
+  state: string
+}
+
 const sessionStore: {
-  [key: string]: { codeVerifier: string; state: string }
+  [key: string]: SessionData
 } = {}
 
 const twitterClient = new TwitterApi({
@@ -18,6 +23,7 @@ export class FollowsController {
   public static index = async (_req: Request, res: Response) => {
     return res.json({ hello: 'twitter index endpoint' })
   }
+
   public static loginTwitter = async (_req: Request, res: Response) => {
     const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
       callbackURL,
@@ -37,23 +43,31 @@ export class FollowsController {
     sessionStore[state] = { codeVerifier, state }
     return res.json({ url })
   }
+
   public static callback = async (req: Request, res: Response) => {
     try {
+      console.log('=========== value from session store =============')
+      console.log(sessionStore)
+
       const { state, code } = req.query as {
         state: string
         code: string
       }
-      if (!state || !code) return res.status(404).json({ err: 'invalid' })
 
-      const session = sessionStore[state as string]
+      if (!state || !code) return res.status(400).json({ err: 'invalid' })
+
+      const session = sessionStore[state]
+      console.log('=========== selected session ============')
+      console.log(session)
+
       if (!session || session.state !== state) {
-        return res.status(400).send('Invalid state')
+        return res.status(400).json({ err: `Invalid state: ${session}` })
       }
 
       const { codeVerifier } = session
       const { client: loggedClient } = await twitterClient.loginWithOAuth2({
-        code: code as string,
-        codeVerifier: codeVerifier as string,
+        code: code,
+        codeVerifier: codeVerifier,
         redirectUri: callbackURL,
       })
 
@@ -67,10 +81,10 @@ export class FollowsController {
         `${process.env.FRONTEND_URL}/apicallback_?i=${
           followResult.data.following ? data.username : ''
         }`
-      ) //EDIT THIS URL TO SEND BACK TO FRONTEND
+      )
     } catch (e) {
       console.log(e)
-      return res.status(500).json({ err: 'error while call back: ', e })
+      return res.status(500).json({ err: 'error while call back', e })
     }
   }
 }
