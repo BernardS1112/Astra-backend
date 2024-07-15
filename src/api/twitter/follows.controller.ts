@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 import { TwitterApi } from 'twitter-api-v2'
+import crypto from 'crypto'
+import querystring from 'querystring'
 
 interface SessionData {
   codeVerifier: string
@@ -16,6 +18,7 @@ const twitterClient = new TwitterApi({
 })
 
 const callbackURL = process.env.TWITTER_CALLBACK_URL as string
+const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID as string
 
 export class FollowsController {
   constructor() {}
@@ -25,23 +28,46 @@ export class FollowsController {
   }
 
   public static loginTwitter = async (_req: Request, res: Response) => {
-    const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
-      callbackURL,
+    // const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
+    //   callbackURL,
+    //   {
+    //     scope: [
+    //       'tweet.write',
+    //       'tweet.read',
+    //       'users.read',
+    //       'offline.access',
+    //       'dm.read',
+    //       'dm.write',
+    //       'follows.write',
+    //       'follows.read',
+    //     ],
+    //   }
+    // )
+    // sessionStore[state] = { codeVerifier, state }
+    // return res.json({ url })
+
+    const state = crypto.randomBytes(16).toString('hex')
+    const codeVerifier = crypto.randomBytes(32).toString('hex')
+    const codeChallenge = crypto
+      .createHash('sha256')
+      .update(codeVerifier)
+      .digest('base64url')
+
+    const url = `https://twitter.com/i/oauth2/authorize?${querystring.stringify(
       {
-        scope: [
-          'tweet.write',
-          'tweet.read',
-          'users.read',
-          'offline.access',
-          'dm.read',
-          'dm.write',
-          'follows.write',
-          'follows.read',
-        ],
+        response_type: 'code',
+        client_id: TWITTER_CLIENT_ID,
+        redirect_uri: callbackURL,
+        scope:
+          'tweet.read tweet.write users.read offline.access dm.read dm.write follows.write follows.read',
+        state: state,
+        code_challenge: codeChallenge,
+        code_challenge_method: 'S256',
       }
-    )
+    )}`
+
     sessionStore[state] = { codeVerifier, state }
-    return res.json({ url })
+    res.json({ url })
   }
 
   public static callback = async (req: Request, res: Response) => {
