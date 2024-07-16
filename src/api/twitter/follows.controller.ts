@@ -2,15 +2,9 @@ import { Request, Response } from 'express'
 import { TwitterApi } from 'twitter-api-v2'
 import crypto from 'crypto'
 import querystring from 'querystring'
-
-interface SessionData {
-  codeVerifier: string
-  state: string
-}
-
-const sessionStore: {
-  [key: string]: SessionData
-} = {}
+import { databaseDetails } from '@/config'
+import { db } from '@/App'
+import { v4 as uuidv4 } from 'uuid'
 
 const twitterClient = new TwitterApi({
   clientId: process.env.TWITTER_CLIENT_ID as string,
@@ -52,6 +46,8 @@ export class FollowsController {
       .createHash('sha256')
       .update(codeVerifier)
       .digest('base64url')
+    const sessionId = uuidv4()
+    const stateWithSession = `${state}:${sessionId}`
 
     const url = `https://twitter.com/i/oauth2/authorize?${querystring.stringify(
       {
@@ -60,21 +56,23 @@ export class FollowsController {
         redirect_uri: callbackURL,
         scope:
           'tweet.read tweet.write users.read offline.access dm.read dm.write follows.write follows.read',
-        state: state,
+        state: stateWithSession,
         code_challenge: codeChallenge,
         code_challenge_method: 'S256',
       }
     )}`
 
-    sessionStore[state] = { codeVerifier, state }
+    // SAVE CODEvERIFIER AND STATE to snowflake database
+    const query = `INSERT INTO ${databaseDetails.SCHEMA_NAME}.${
+      databaseDetails.LAUNCHPAD_TWITTER_CODE
+    } (SESSION_ID, CODE_VERIFIER, STATE) VALUES ('${sessionId}', '${codeVerifier.toString()}', '${state.toString()}');`
+    await db.query(query)
+
     res.json({ url })
   }
 
   public static callback = async (req: Request, res: Response) => {
     try {
-      console.log('=========== value from session store =============')
-      console.log(sessionStore)
-
       const { state, code } = req.query as {
         state: string
         code: string
@@ -82,15 +80,23 @@ export class FollowsController {
 
       if (!state || !code) return res.status(400).json({ err: 'invalid' })
 
-      const session = sessionStore[state]
-      console.log('=========== selected session ============')
-      console.log(session)
+      const [sessionState, sessionId] = state.split(':')
 
-      if (!session || session.state !== state) {
+      // Select code verifier and state from snowflak database
+      const query = `SELECT * FROM ${databaseDetails.SCHEMA_NAME}.${databaseDetails.LAUNCHPAD_TWITTER_CODE} WHERE SESSION_ID='${sessionId}';`
+
+      const [resp] = await db.query(query)
+      if (resp.length === 0) {
+        return res.status(400).json({ err: 'Session data not found' })
+      }
+      const session = resp[0]
+      const dbState = session.STATE
+      const codeVerifier = session.CODE_VERIFIER
+
+      if (dbState != sessionState) {
         return res.status(400).json({ err: `Invalid state: ${session}` })
       }
 
-      const { codeVerifier } = session
       const { client: loggedClient } = await twitterClient.loginWithOAuth2({
         code: code,
         codeVerifier: codeVerifier,
