@@ -33,7 +33,6 @@
     "graphql-request": "^6.1.0",
     "localStorage": "^1.0.4",
     "lodash": "^4.17.21",
-    "lowdb": "7.0.1",
     "moment": "^2.29.4",
     "node-cron": "^3.0.2",
     "node-fetch": "^3.3.2",
