@@ -84,7 +84,7 @@ export const chainConfigs: TChainConfig = {
     iTokenStakingContractAddress: '0x828650Bc3270dD27B21914CDa1f2650dC23100a9',
     chefContractAddress: '0xa527476575972e28F2055F28901B7767b6672928',
     astraContractAddress: '0x6ea5046B9aB2F5100644f67EfBa797f8d08D7515',
-    DAOContractAddress: '0xeFdc06A60D568B875b75b6F46d715423264AfEd7',
+    DAOContractAddress: '0x578560d33E4DcFACB4003564A4F0332546B67f09',
     DAAContractAddress: '0x93Ee0bAcDbe4743a4fEEF68c91563ddCf913eD14',
     nftContractAddress: '0x6b2937Bde17889EDCf8fbD8dE31C3C2a70Bc4d65',
     utilityContractAddress: '0xc5e0930379fe53489F8f6e56351949c1B647518B',
