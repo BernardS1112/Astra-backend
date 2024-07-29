@@ -126,7 +126,7 @@ jobs:
           sed -i "s/tag: .*/tag: ${SAFE_BRANCH_NAME}/" ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add ./helm/my_helm-chart/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml
+          git add ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml
           git commit -m "Update image tag to ${SAFE_BRANCH_NAME} [skip ci]"
           git fetch
           git pull --rebase origin ${{ github.ref }}
