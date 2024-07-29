@@ -41,10 +41,3 @@ autoscaling:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
-
-
-pvc:
-  accessModes:
-    - ReadWriteOnce
-  size: 10Gi
-  storageClassName: standard-rwo
