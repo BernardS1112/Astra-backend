@@ -25,7 +25,8 @@ export enum Schema {
 }
 
 export enum Database {
-  ASTRA_DB_DEV = 'ASTRA_DB_PROD',
+  ASTRA_DB_DEV = 'ASTRA_DB_DEV',
+  ASTRA_DB_PROD = 'ASTRA_DB_PROD',
 }
 
 export enum Endpoints {
