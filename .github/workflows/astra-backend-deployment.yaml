@@ -123,7 +123,7 @@ jobs:
         run: |
           BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
           SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
-          sed -i "s/tag: .*/tag: ${SAFE_BRANCH_NAME}/" ./helm/my_helm-chart/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml
+          sed -i "s/tag: .*/tag: ${SAFE_BRANCH_NAME}/" ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add ./helm/my_helm-chart/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml
