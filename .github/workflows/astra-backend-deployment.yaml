@@ -117,38 +117,77 @@ jobs:
           BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
           SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
           docker push us-central1-docker.pkg.dev/tmgalaxy/astra-testnet/astra-backend:$SAFE_BRANCH_NAME
-    
-  release-to-k8s:
-    name: "Release to k8s"
-    runs-on: ubuntu-latest
-    needs: [sonar-scan, docker-build-and-push, write-creds-from-secrets]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Authenticate to Google Cloud
 
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GKE_SA_KEY }}
 
-      - name: Get branch names.
-        id: branch-names
-        uses: tj-actions/branch-names@v8
-
-      - name: "Get alpha GKE credentials"
-        uses: "google-github-actions/get-gke-credentials@v2"
-        with:
-          cluster_name: "cluster-alpha-us-central1"
-          location: "us-central1"
-
-      - name: Deploy testnet to cluster
-        if: (github.ref == 'refs/heads/testnet' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/mainnet') && (github.event.pull_request.merged == true || github.event_name == 'push')
+      - name: Update values.yaml with image tag
         run: |
           BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
           SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
-          helm upgrade --install astra-backend helm/astra-backend \
-          --namespace astra-${{ steps.branch-names.outputs.ref_branch }} \
-          --values ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml \
-          --set image.tag=$SAFE_BRANCH_NAME \
-          --timeout 5m0s --create-namespace --debug
+          sed -i "s/tag: .*/tag: ${SAFE_BRANCH_NAME}/" ./helm/my_helm-chart/helmvars/${SAFE_BRANCH_NAME}/values.yaml
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add ./helm/my_helm-chart/helmvars/${SAFE_BRANCH_NAME}/values.yaml
+          git commit -m "Update image tag to ${SAFE_BRANCH_NAME} [skip ci]"
+          git fetch
+          git pull --rebase origin ${{ github.ref }}
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.ARGOCD_PAT }}
+  
+      - name: Install ArgoCD CLI
+        run: curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.1.7/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
+  
+      - name: Trigger ArgoCD sync for alpha
+        run: |
+          BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
+          SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
+          argocd login $ARGOCD_SERVER --username $ARGOCD_USERNAME --password $ARGOCD_PASSWORD --insecure --grpc-web
+          argocd app sync tokenmetrics-${SAFE_BRANCH_NAME}
+        env:
+          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+          ARGOCD_USERNAME: ${{ secrets.ARGOCD_USERNAME }}
+          ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
+
+
+
+
+
+
+    
+  # release-to-k8s:
+  #   name: "Release to k8s"
+  #   runs-on: ubuntu-latest
+  #   needs: [sonar-scan, docker-build-and-push, write-creds-from-secrets]
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Authenticate to Google Cloud
+
+  #       uses: google-github-actions/auth@v2
+  #       with:
+  #         credentials_json: ${{ secrets.GKE_SA_KEY }}
+
+  #     - name: Get branch names.
+  #       id: branch-names
+  #       uses: tj-actions/branch-names@v8
+
+
+
+
+      # - name: "Get alpha GKE credentials"
+      #   uses: "google-github-actions/get-gke-credentials@v2"
+      #   with:
+      #     cluster_name: "cluster-alpha-us-central1"
+      #     location: "us-central1"
+
+      # - name: Deploy testnet to cluster
+      #   if: (github.ref == 'refs/heads/testnet' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/mainnet') && (github.event.pull_request.merged == true || github.event_name == 'push')
+      #   run: |
+      #     BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
+      #     SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
+      #     helm upgrade --install astra-backend helm/astra-backend \
+      #     --namespace astra-${{ steps.branch-names.outputs.ref_branch }} \
+      #     --values ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml \
+      #     --set image.tag=$SAFE_BRANCH_NAME \
+      #     --timeout 5m0s --create-namespace --debug
 
           
