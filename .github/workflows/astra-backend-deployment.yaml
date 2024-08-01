@@ -120,6 +120,7 @@ jobs:
 
 
       - name: Update values.yaml with image tag
+        if: github.event_name == 'push'
         run: |
           BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
           SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
