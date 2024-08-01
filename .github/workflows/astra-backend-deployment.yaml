@@ -129,21 +129,21 @@ jobs:
           git add ./helm/astra-backend/helmvars/${{ steps.branch-names.outputs.ref_branch }}/values.yaml
           git commit -m "Update image tag to ${SAFE_BRANCH_NAME} [skip ci]"
           git fetch
-          git pull --rebase origin ${{ github.ref }}
+          git pull --rebase origin ${{ github.ref_name }}
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.ARGOCD_PAT }}
   
-      - name: Install ArgoCD CLI
-        run: curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.1.7/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
+      # - name: Install ArgoCD CLI
+      #   run: curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.1.7/argocd-linux-amd64 && chmod +x /usr/local/bin/argocd
   
-      - name: Trigger ArgoCD sync for alpha
-        run: |
-          BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
-          SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
-          argocd login $ARGOCD_SERVER --username $ARGOCD_USERNAME --password $ARGOCD_PASSWORD --insecure --grpc-web
-          argocd app sync astradao-backend-${{ steps.branch-names.outputs.ref_branch }}
-        env:
-          ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
-          ARGOCD_USERNAME: ${{ secrets.ARGOCD_USERNAME }}
-          ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
+      # - name: Trigger ArgoCD sync for alpha
+      #   run: |
+      #     BRANCH_NAME=${{ steps.branch-names.outputs.ref_branch }}-${GITHUB_SHA::7}
+      #     SAFE_BRANCH_NAME=${BRANCH_NAME//\//-}
+      #     argocd login $ARGOCD_SERVER --username $ARGOCD_USERNAME --password $ARGOCD_PASSWORD --insecure --grpc-web
+      #     argocd app sync astradao-backend-${{ steps.branch-names.outputs.ref_branch }}
+      #   env:
+      #     ARGOCD_SERVER: ${{ secrets.ARGOCD_SERVER }}
+      #     ARGOCD_USERNAME: ${{ secrets.ARGOCD_USERNAME }}
+      #     ARGOCD_PASSWORD: ${{ secrets.ARGOCD_PASSWORD }}
