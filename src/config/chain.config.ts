@@ -48,7 +48,7 @@ export const chainConfigs: TChainConfig = {
       'https://nd-009-939-622.p2pify.com/0390ea2c5ea8c1d20e350e3a1c95f302',
     chainStackWS:
       'wss://ws-nd-009-939-622.p2pify.com/0390ea2c5ea8c1d20e350e3a1c95f302',
-    CrosschainSaleManagerAddress: '0x5b15FbE7aB98ad8000Cd50DA5A8906994f57e8F1',
+    CrosschainSaleManagerAddress: '0xE087721FC91390105A8310520889D08e632dADad',
     iTokenStakingContractAddress: '0xB38b6827757b40c08BB83cfe7D9fB2e69D12CD3D',
     chefContractAddress: '0x6fE79b531b2b1d5378631B3Ab33B0994E297355E',
     astraContractAddress: '0xd3188e0df68559c0B63361f6160c57Ad88B239D8',
